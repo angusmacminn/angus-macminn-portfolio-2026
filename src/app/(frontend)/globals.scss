@@ -1,0 +1,153 @@
+:root {
+  // colours 
+  --background: #ffffff;
+  --foreground: #1f1f1f;
+  --card: #f4f4f5;
+  --border: #e4e4e7;
+  --muted: #f4f4f5;
+  --muted-foreground: #70707a;
+  --primary: #111111;
+  --primary-foreground: #fafafa; 
+  --success: #7bc9e8;
+  --warning: #f4d9a4;
+  --error: #ef9a9a;
+  --radius: 10px;
+
+  // font sizes
+  --h1-desktop: 6rem;
+  --h1-tablet: 4rem;
+  --h1-mobile: 3rem;
+
+  --h2-desktop: 2.5rem;
+  --h2-tablet: 2rem;
+  --h2-mobile: 1.75rem;
+
+  --h3-desktop: 2rem;
+  --h3-tablet: 1.75rem;
+  --h3-mobile: 1.5rem;
+
+  --subheading-large: 2rem;
+  --subheading-medium: 1.5rem;
+  --subheading-small: 1rem;
+
+  //spacing
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.5rem;
+  --spacing-6: 2rem;
+  --spacing-7: 2.5rem;
+  --spacing-8: 3rem;
+  --spacing-9: 3.5rem;
+  --spacing-10: 4rem;
+  --spacing-11: 4.5rem;
+  --spacing-12: 5rem;
+
+
+  --max-width-section: 1400px;
+  --page-gutter-mobile: var(--spacing-6);
+  --page-gutter-tablet: var(--spacing-10);
+  --page-gutter-desktop: var(--spacing-12);
+
+}
+
+[data-theme='dark'] {
+  --background: lch(4.62% 1.9 267.88);
+  --foreground: #EDF3F8;
+  --card: #25252c;
+  // Matches Paper work-card: subtle shift in OKLab (not LCH — same L% values are different colors)
+  --card-gradient: linear-gradient(
+    in oklab 180deg,
+    oklab(19.9% -0.003 -0.013) 0%,
+    oklab(18.5% -0.002 -0.009) 100%
+  );
+  --border: #1F252E;
+  --muted: #27272a;
+  --muted-foreground: #B7C0CA;
+  --primary: #fafafa;
+  --primary-green: #2FFD7B;
+  --primary-foreground: #111111;
+  --success: #2e6f86;
+  --warning: #6f5b2a;
+  --error: #7f3f3f;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'Radio Grotesk';
+  src: url('/fonts/PPRadioGrotesk-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 5rem;
+  letter-spacing: 0.02em;
+}
+
+h2 {
+  font-size: 2.5rem;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+}
+
+h3 {
+  letter-spacing: 0.02em;
+  font-weight: 400;
+}
+
+
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Radio Grotesk', sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+a {
+  color: inherit;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max-width-section);
+  margin: 0 auto;
+  padding: 0 var(--page-gutter-mobile);
+}
+
+.site-logo {
+  width: 100%;
+  max-width: 9.375rem;
+  height: 34px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--page-gutter-desktop);
+  }
+}
+
+html {
+  opacity: 0;
+}
+
+html[data-theme='dark'],
+html[data-theme='light'] {
+  opacity: 1;
+}

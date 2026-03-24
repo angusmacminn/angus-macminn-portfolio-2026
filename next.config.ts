@@ -13,7 +13,13 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 
 const nextConfig: NextConfig = {
   images: {
-    qualities: [100],
+    // Next 15+ restricts allowed quality values; 75 is the framework default in many paths
+    qualities: [75, 100],
+    // Payload can serve files from `/api/media/...` (plugin/local API) or static `/media/...` (public dir)
+    localPatterns: [
+      { pathname: '/media/**' },
+      { pathname: '/api/media/**' },
+    ],
     remotePatterns: [
       ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
         const url = new URL(item)

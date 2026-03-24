@@ -1,0 +1,27 @@
+.home-about {
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+
+  &__heading {
+    margin: 0 0 1.5rem;
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  &__grid {
+    display: grid;
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .home-about {
+    &__heading {
+      font-size: var(--h2-desktop);
+    }
+
+    &__grid {
+      grid-template-columns: 7fr 5fr;
+    }
+  }
+}

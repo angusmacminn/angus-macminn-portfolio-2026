@@ -1,24 +1,26 @@
-import { getClientSideURL } from '@/utilities/getURL'
-
 /**
- * Processes media resource URL to ensure proper formatting
- * @param url The original URL from the resource
- * @param cacheTag Optional cache tag to append to the URL
- * @returns Properly formatted URL with cache tag if provided
+ * Builds a URL for media assets.
+ *
+ * **Relative paths** (`/media/...`): returned as-is (plus optional cache-bust query).
+ * Do not prepend the site origin here: Next.js `<Image>` would treat a full URL as
+ * *remote*, which requires `images.remotePatterns` to match exactly — easy to break
+ * in dev (`localhost` vs `127.0.0.1`, port changes) and causes 400s from the optimizer.
+ *
+ * **Absolute URLs** (http/https): returned unchanged except for an optional `v=` param.
  */
 export const getMediaUrl = (url: string | null | undefined, cacheTag?: string | null): string => {
   if (!url) return ''
 
-  if (cacheTag && cacheTag !== '') {
-    cacheTag = encodeURIComponent(cacheTag)
+  const withCacheBust = (href: string) => {
+    if (cacheTag == null || cacheTag === '') return href
+    const encoded = encodeURIComponent(cacheTag)
+    const sep = href.includes('?') ? '&' : '?'
+    return `${href}${sep}v=${encoded}`
   }
 
-  // Check if URL already has http/https protocol
   if (url.startsWith('http://') || url.startsWith('https://')) {
-    return cacheTag ? `${url}?${cacheTag}` : url
+    return withCacheBust(url)
   }
 
-  // Otherwise prepend client-side URL
-  const baseUrl = getClientSideURL()
-  return cacheTag ? `${baseUrl}${url}?${cacheTag}` : `${baseUrl}${url}`
+  return withCacheBust(url)
 }

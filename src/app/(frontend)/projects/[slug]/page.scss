@@ -1,0 +1,111 @@
+.project-page {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+
+  &__header {
+    margin-bottom: 2.5rem;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 2.5rem;
+    line-height: 1.05;
+  }
+
+  &__subtitle {
+    margin-top: 0.75rem;
+    max-width: 48rem;
+    font-size: 1.125rem;
+    color: var(--muted-foreground);
+  }
+
+  &__meta {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  &__visit-link {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  &__hero-image,
+  &__overview {
+    margin-bottom: 2.5rem;
+  }
+
+  &__hero-caption,
+  &__image-caption {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+  }
+
+  &__overview p {
+    max-width: 48rem;
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  &__story {
+    margin-bottom: 3rem;
+  }
+
+  &__sections {
+    display: grid;
+    gap: 3rem;
+  }
+
+  &__section {
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+  }
+
+  &__section-kicker {
+    margin: 0;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted-foreground);
+  }
+
+  &__section-heading {
+    margin: 0.5rem 0 0;
+    font-size: 1.875rem;
+    line-height: 1.15;
+  }
+
+  &__section-subheading {
+    margin: 0.75rem 0 0;
+    max-width: 48rem;
+  }
+
+  &__section-body {
+    margin-top: 1rem;
+  }
+
+  &__section-images {
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .project-page {
+    &__title {
+      font-size: 3.75rem;
+    }
+
+    &__overview p {
+      font-size: 1.125rem;
+    }
+
+    &__section-images--two-up {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}

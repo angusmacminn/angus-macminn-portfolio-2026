@@ -1,7 +1,33 @@
-@import '~@payloadcms/ui/scss';
-
+// Payload UI small-break is 768px; avoid @payloadcms/ui/scss (Turbopack + bare partials).
 .admin-bar {
-  @include small-break {
+  background: #000;
+  color: #fff;
+  padding: 0.5rem 0;
+
+  &--visible {
+    display: block;
+  }
+
+  &--hidden {
+    display: none;
+  }
+
+  &__inner,
+  &__controls,
+  &__logo,
+  &__user {
+    color: #fff;
+  }
+
+  &__inner {
+    padding: 0.5rem 0;
+  }
+
+  &__controls {
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
     display: none;
   }
 }

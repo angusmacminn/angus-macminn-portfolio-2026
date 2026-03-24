@@ -1,0 +1,79 @@
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--default {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  &--destructive {
+    background: #c62828;
+    color: #fff;
+  }
+
+  &--outline {
+    border-color: var(--border);
+    background: transparent;
+    color: var(--foreground);
+  }
+
+  &--secondary {
+    background: var(--card);
+    color: var(--foreground);
+  }
+
+  &--ghost {
+    background: transparent;
+    color: var(--foreground);
+  }
+
+  &--link {
+    background: transparent;
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  &--clear {
+    padding: 0;
+    border: none;
+  }
+
+  &--default,
+  &--sm,
+  &--lg,
+  &--icon {
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+  }
+
+  &--sm {
+    min-height: 2.25rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  &--lg {
+    min-height: 2.75rem;
+    padding: 0.65rem 1.25rem;
+  }
+
+  &--icon {
+    width: 2.5rem;
+    padding: 0;
+  }
+}

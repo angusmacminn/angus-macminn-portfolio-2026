@@ -1,0 +1,37 @@
+.code-block {
+  margin: 0;
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  font-size: 0.75rem;
+  overflow-x: auto;
+
+  &__line {
+    display: table-row;
+  }
+
+  &__line-number {
+    display: table-cell;
+    user-select: none;
+    text-align: right;
+    color: rgba(255, 255, 255, 0.25);
+  }
+
+  &__line-content {
+    display: table-cell;
+    padding-left: 1rem;
+  }
+}
+
+.code-copy {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+}

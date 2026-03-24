@@ -1,0 +1,19 @@
+.site-header {
+  position: relative;
+  z-index: 20;
+
+  &__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 0;
+  }
+
+  &__logo {
+    filter: invert(1);
+  }
+}
+
+[data-theme='dark'] .site-header__logo {
+  filter: none;
+}

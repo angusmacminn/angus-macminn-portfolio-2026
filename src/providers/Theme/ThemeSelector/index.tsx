@@ -1,18 +1,12 @@
 'use client'
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import React, { useState } from 'react'
 
 import type { Theme } from './types'
 
 import { useTheme } from '..'
 import { themeLocalStorageKey } from './types'
+import './index.scss'
 
 export const ThemeSelector: React.FC = () => {
   const { setTheme } = useTheme()
@@ -34,18 +28,21 @@ export const ThemeSelector: React.FC = () => {
   }, [])
 
   return (
-    <Select onValueChange={onThemeChange} value={value}>
-      <SelectTrigger
+    <div className="theme-selector">
+      <label className="theme-selector__label" htmlFor="theme-selector">
+        Theme
+      </label>
+      <select
         aria-label="Select a theme"
-        className="w-auto bg-transparent gap-2 pl-0 md:pl-3 border-none"
+        className="theme-selector__select"
+        id="theme-selector"
+        onChange={(e) => onThemeChange(e.target.value as Theme & 'auto')}
+        value={value}
       >
-        <SelectValue placeholder="Theme" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="auto">Auto</SelectItem>
-        <SelectItem value="light">Light</SelectItem>
-        <SelectItem value="dark">Dark</SelectItem>
-      </SelectContent>
-    </Select>
+        <option value="auto">Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </div>
   )
 }

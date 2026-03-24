@@ -16,9 +16,9 @@ export function CopyButton({ code }: { code: string }) {
   }
 
   return (
-    <div className="flex justify-end align-middle">
+    <div className="code-copy">
       <Button
-        className="flex gap-1"
+        className="code-copy__button"
         variant={'secondary'}
         onClick={async () => {
           await navigator.clipboard.writeText(code)

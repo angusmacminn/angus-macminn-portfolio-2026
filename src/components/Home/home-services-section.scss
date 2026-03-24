@@ -1,0 +1,50 @@
+.home-services {
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+
+  &__heading {
+    margin: 0 0 1rem;
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  &__intro {
+    margin: 0 0 2rem;
+    max-width: 40rem;
+    color: var(--muted-foreground);
+  }
+
+  &__grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  &__card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+  }
+
+  &__card-title {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  &__card-description {
+    margin: 0.5rem 0 0;
+    color: var(--muted-foreground);
+    font-size: 0.95rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .home-services {
+    &__heading {
+      font-size: 2.25rem;
+    }
+
+    &__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}

@@ -11,6 +11,10 @@ import type { Props as MediaProps } from '../types'
 import { cssVariables } from '@/cssVariables'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 
+/** Fallback when Payload has not stored dimensions yet — Next/Image requires numeric width/height when not using fill. */
+const FALLBACK_WIDTH = 1200
+const FALLBACK_HEIGHT = 800
+
 const { breakpoints } = cssVariables
 
 // A base64 encoded image to use as a placeholder while the image is loading
@@ -20,15 +24,10 @@ const placeholderBlur =
 /**
  * ImageMedia
  *
- * This component passes a **relative** `src` (e.g. `/media/...`) to Next.js Image.
- * The `getMediaUrl` utility constructs the full URL by prepending the base URL from env vars
- * (NEXT_PUBLIC_SERVER_URL). Next.js then optimizes this using `remotePatterns` configured
- * in next.config.js — no custom `loader` needed.
- *
- * Flow:
- *   1. Resource URL from Payload: `/media/image-123.jpg`
- *   2. getMediaUrl() adds base URL: `https://yourdomain.com/media/image-123.jpg`
- *   3. Next.js Image optimizes via remotePatterns: `/_next/image?url=...&w=1200&q=75`
+ * This component passes a **same-origin path** (e.g. `/media/...`) to Next.js Image via
+ * `getMediaUrl` (cache-bust only). Avoids turning local files into full URLs, which would
+ * force the image optimizer to fetch them as “remote” and require `remotePatterns` to match
+ * host/port exactly (a common source of 400 errors in dev).
  *
  * If your storage/plugin returns **external CDN URLs** (e.g. `https://cdn.example.com/...`),
  * choose ONE of the following:
@@ -41,8 +40,8 @@ const placeholderBlur =
  *   C) Skip optimization:
  *      <Image unoptimized src="https://cdn.example.com/hero.jpg" width={1200} height={600} alt="" />
  *
- * TL;DR: Template uses relative URLs + getMediaUrl() to construct full URLs, then relies on
- * remotePatterns for optimization. Only add `loader` if using external CDNs with custom transforms.
+ * TL;DR: Local Payload files use path-only `src`; add `remotePatterns` + optional `loader` only
+ * for real remote/CDN URLs.
  */
 
 export const ImageMedia: React.FC<MediaProps> = (props) => {
@@ -66,16 +65,28 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   if (!src && resource && typeof resource === 'object') {
     const { alt: altFromResource, height: fullHeight, url, width: fullWidth } = resource
 
-    width = fullWidth!
-    height = fullHeight!
+    const w = fullWidth != null && fullWidth > 0 ? fullWidth : FALLBACK_WIDTH
+    const h = fullHeight != null && fullHeight > 0 ? fullHeight : FALLBACK_HEIGHT
+    width = w
+    height = h
     alt = altFromResource || ''
 
     const cacheTag = resource.updatedAt
 
-    src = getMediaUrl(url, cacheTag)
+    src = getMediaUrl(url ?? '', cacheTag)
   }
 
+  if (!src) {
+    return null
+  }
+
+  const isStaticImport = typeof src === 'object'
   const loading = loadingFromProps || (!priority ? 'lazy' : undefined)
+
+  const layoutWidth =
+    fill || isStaticImport ? undefined : (width != null && width > 0 ? width : FALLBACK_WIDTH)
+  const layoutHeight =
+    fill || isStaticImport ? undefined : (height != null && height > 0 ? height : FALLBACK_HEIGHT)
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
   const sizes = sizeFromProps
@@ -90,7 +101,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         alt={alt || ''}
         className={cn(imgClassName)}
         fill={fill}
-        height={!fill ? height : undefined}
+        height={layoutHeight}
         placeholder="blur"
         blurDataURL={placeholderBlur}
         priority={priority}
@@ -98,7 +109,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         loading={loading}
         sizes={sizes}
         src={src}
-        width={!fill ? width : undefined}
+        width={layoutWidth}
       />
     </picture>
   )

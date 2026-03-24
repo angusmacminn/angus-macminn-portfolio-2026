@@ -1,0 +1,13 @@
+.not-found {
+  padding-top: 7rem;
+  padding-bottom: 7rem;
+
+  &__content {
+    margin-bottom: 1rem;
+  }
+
+  &__message {
+    margin: 0.75rem 0 1rem;
+    color: var(--muted-foreground);
+  }
+}

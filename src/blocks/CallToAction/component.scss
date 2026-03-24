@@ -1,0 +1,35 @@
+.cta-block {
+  &__inner {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  &__content {
+    max-width: 48rem;
+    display: flex;
+    align-items: center;
+  }
+
+  &__rich-text {
+    margin-bottom: 0;
+  }
+
+  &__links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .cta-block__inner {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
