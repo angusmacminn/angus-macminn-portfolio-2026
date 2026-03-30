@@ -1,6 +1,5 @@
 .home-hero {
-  padding-top: var(--spacing-7);
-  padding-bottom: var(--spacing-7);
+
 
   &__content {
     max-width: 48rem;
@@ -14,26 +13,27 @@
   }
 
   &__heading-2 {
-    margin: var(--spacing-4) 0 0;
+    margin: var(--spacing-6) 0 0;
     font-size: var(--h2-mobile);
     line-height: 1.1;
     font-weight: 400;
   }
 
   &__position {
-    margin: var(--spacing-4) 0 0;
+    margin: var(--spacing-6) 0 0;
     font-size: 1.125rem;
   }
 
   &__subheading {
-    margin: var(--spacing-4) 0 0;
+    margin: var(--spacing-6) 0 0;
     max-width: 48rem;
     font-size: var(--subheading-small);
     color: var(--muted-foreground);
+    line-height: 1.5;
   }
 
   &__location {
-    margin: var(--spacing-5) 0 0;
+    margin: var(--spacing-6) 0 0;
     font-size: var(--subheading-small);
     // text-transform: uppercase;
     // letter-spacing: 0.08em;
@@ -45,6 +45,10 @@
   .home-hero {
     &__heading {
       font-size: 3.75rem;
+    }
+
+    &__heading-2 {
+      font-size: var(--h2-desktop);
     }
 
     &__position {

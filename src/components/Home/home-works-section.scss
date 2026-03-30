@@ -59,11 +59,12 @@
     background-color: #121720;
     border: 1px solid #2a313c;
     color: #e4ebf2;
+    rotate: -45deg;
     transition:
-      border-color 0.25s ease,
-      color 0.25s ease,
-      background-color 0.25s ease,
-      rotate 0.25s ease;
+      border-color 0.3s ease,
+      color 0.3s ease,
+      background-color 0.3s ease,
+      rotate 0.3s ease;
   }
 
   &__card-arrow svg {
@@ -72,8 +73,9 @@
 
   /* Descendant selector: &__card-arrow nested under &__card:hover would compile incorrectly */
   &__card:hover &__card-arrow {
-    border-color: var(--primary-green, #2ffd7b);
-    rotate: -45deg;
+    background-color: var(--primary-green, #2ffd7b);
+    color: #121720;
+    rotate: 0deg;
     transition:
       rotate 0.25s ease;
   }

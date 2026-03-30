@@ -2,16 +2,16 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  text-decoration: none;
+
   color: inherit;
 
   &--inline {
-    text-decoration: underline;
+    
     text-underline-offset: 2px;
   }
 
   &--link {
-    text-decoration: underline;
+    
     text-underline-offset: 3px;
   }
 

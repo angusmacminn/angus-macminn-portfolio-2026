@@ -3,27 +3,32 @@ import React from 'react'
 
 interface Props {
   className?: string
+  /** Kept for API compatibility with the old img-based logo; SVG renders immediately. */
   loading?: 'lazy' | 'eager'
+  /** Kept for API compatibility with the old img-based logo. */
   priority?: 'auto' | 'high' | 'low'
 }
 
 export const Logo = (props: Props) => {
-  const { loading: loadingFromProps, priority: priorityFromProps, className } = props
-
-  const loading = loadingFromProps || 'lazy'
-  const priority = priorityFromProps || 'low'
+  const { className } = props
 
   return (
-    /* eslint-disable @next/next/no-img-element */
-    <img
-      alt="Payload Logo"
-      width={193}
-      height={34}
-      loading={loading}
-      fetchPriority={priority}
-      decoding="async"
-      className={clsx('site-logo', className)}
-      src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-logo-light.svg"
-    />
+    <span className={clsx('site-logo', 'site-logo--mark', className)} role="img" aria-label="Angus MacMinn">
+      <svg
+        className="site-logo__svg"
+        fill="none"
+        height="861"
+        viewBox="0 0 817 861"
+        width="817"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          clipRule="evenodd"
+          d="M346 30C346 13.4314 359.431 0 376 0H624H635.426H787C803.569 0 817 13.4315 817 30V830C817 846.569 803.569 860 787 860H624C607.431 860 594 846.569 594 830V368.451C594 341.375 572.051 319.426 544.975 319.426V319.426C517.9 319.426 495.951 341.375 495.951 368.451V559.431C495.951 575.999 482.519 589.431 465.951 589.431H379.426C346.289 589.431 319.426 616.294 319.426 649.431V830.426C319.426 846.995 305.994 860.426 289.426 860.426H30C13.4314 860.426 0 846.995 0 830.426V571C0 554.432 13.4315 541 30 541H116.525C149.662 541 176.525 514.138 176.525 481V300.005C176.525 283.436 189.956 270.005 206.525 270.005H286C319.137 270.005 346 243.142 346 210.005V30Z"
+          fill="currentColor"
+          fillRule="evenodd"
+        />
+      </svg>
+    </span>
   )
 }

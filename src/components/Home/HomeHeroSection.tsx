@@ -7,7 +7,7 @@ export const HomeHeroSection: React.FC<Page['hero']> = ({ heading, location, pos
   if (!heading) return null
 
   return (
-    <section className="home-hero container">
+    <section className="home-hero container section">
       <div className="home-hero__content">
         <h1 className="home-hero__heading">{heading}</h1>
         {position && <p className="home-hero__position">{position}</p>}

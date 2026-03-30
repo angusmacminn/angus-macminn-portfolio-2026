@@ -15,14 +15,20 @@
   }
 
   &__grid {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
+    justify-content: space-between;
   }
 
   &__card {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 1rem;
+    background: var(--card-gradient);
+    transition:
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
   }
 
   &__card-title {
@@ -39,12 +45,31 @@
 
 @media (min-width: 768px) {
   .home-services {
+
+    &__container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 96px;
+    }
+
+    &__header {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
     &__heading {
-      font-size: 2.25rem;
+      font-size: var(--h2-desktop);
     }
 
     &__grid {
       grid-template-columns: 1fr 1fr;
+    }
+
+    &__card:hover {
+      border-color: var(--primary-green, #2ffd7b);
+      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
     }
   }
 }

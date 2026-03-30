@@ -1147,8 +1147,51 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Header {
   id: string;
+  /**
+   * Shown when a nav item is set to “Contact panel”. Email, booking link, and social icons.
+   */
+  contactPanel?: {
+    /**
+     * Shown at the top of the contact popover.
+     */
+    heading?: string | null;
+    email?: string | null;
+    calendarLabel?: string | null;
+    calendarUrl?: string | null;
+    /**
+     * Short line at the bottom of the popover (e.g. availability or CTA hint).
+     */
+    subheading?: string | null;
+    socialLinks?:
+      | {
+          platform: 'github' | 'linkedin' | 'x' | 'email' | 'instagram' | 'youtube' | 'website';
+          link?: {
+            type?: ('reference' | 'custom') | null;
+            newTab?: boolean | null;
+            reference?:
+              | ({
+                  relationTo: 'pages';
+                  value: string | Page;
+                } | null)
+              | ({
+                  relationTo: 'projects';
+                  value: string | Project;
+                } | null);
+            url?: string | null;
+          };
+          id?: string | null;
+        }[]
+      | null;
+  };
   navItems?:
     | {
+        /**
+         * Separate from “Internal link / Custom URL” in Link below. Choose Contact popover to open the dropdown instead of leaving the page.
+         */
+        itemType?: ('link' | 'contact') | null;
+        /**
+         * Used when Navigation mode is “Link to a page…”. For Contact popover rows, only the Label is shown on the site; Internal link vs Custom URL is ignored.
+         */
         link: {
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
@@ -1176,9 +1219,36 @@ export interface Header {
  */
 export interface Footer {
   id: string;
-  navItems?:
+  pageLinks?:
     | {
-        link: {
+        heading: string;
+        links?:
+          | {
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?:
+                  | ({
+                      relationTo: 'pages';
+                      value: string | Page;
+                    } | null)
+                  | ({
+                      relationTo: 'projects';
+                      value: string | Project;
+                    } | null);
+                url?: string | null;
+                label: string;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  socialLinks?:
+    | {
+        platform: 'github' | 'linkedin' | 'x' | 'email' | 'instagram' | 'youtube' | 'website';
+        link?: {
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?:
@@ -1191,7 +1261,6 @@ export interface Footer {
                 value: string | Project;
               } | null);
           url?: string | null;
-          label: string;
         };
         id?: string | null;
       }[]
@@ -1204,9 +1273,33 @@ export interface Footer {
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  contactPanel?:
+    | T
+    | {
+        heading?: T;
+        email?: T;
+        calendarLabel?: T;
+        calendarUrl?: T;
+        subheading?: T;
+        socialLinks?:
+          | T
+          | {
+              platform?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                  };
+              id?: T;
+            };
+      };
   navItems?:
     | T
     | {
+        itemType?: T;
         link?:
           | T
           | {
@@ -1227,9 +1320,30 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
-  navItems?:
+  pageLinks?:
     | T
     | {
+        heading?: T;
+        links?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
         link?:
           | T
           | {
@@ -1237,7 +1351,6 @@ export interface FooterSelect<T extends boolean = true> {
               newTab?: T;
               reference?: T;
               url?: T;
-              label?: T;
             };
         id?: T;
       };

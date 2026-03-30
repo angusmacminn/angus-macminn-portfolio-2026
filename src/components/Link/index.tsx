@@ -9,6 +9,7 @@ type CMSLinkType = {
   appearance?: 'inline' | 'default' | 'outline' | 'link' | null
   children?: React.ReactNode
   className?: string
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>
   label?: string | null
   newTab?: boolean | null
   reference?: {
@@ -28,6 +29,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     className,
     label,
     newTab,
+    onClick,
     reference,
     size,
     url,
@@ -47,7 +49,12 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
   /* Ensure we don't break any styles set by richText */
   if (appearance === 'inline') {
     return (
-      <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
+      <Link
+        className={cn(className)}
+        href={href || url || ''}
+        onClick={onClick}
+        {...newTabProps}
+      >
         {label && label}
         {children && children}
       </Link>
@@ -63,6 +70,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
         className,
       )}
       href={href || url || ''}
+      onClick={onClick}
       {...newTabProps}
     >
       {label && label}
