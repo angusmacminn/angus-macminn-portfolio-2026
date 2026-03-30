@@ -13,7 +13,7 @@ export function HomeAboutSection({ heading, body, image }: Props) {
   if (!heading && !body && !image) return null
 
   return (
-    <section className="home-about container section">
+    <section id="about" className="home-about container section">
       {heading && <h2 className="home-about__heading">{heading}</h2>}
 
       <div className="home-about__grid">

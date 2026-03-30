@@ -52,7 +52,7 @@ export function HomeWorksSection({ heading, intro, projects }: Props) {
   if (!heading && !intro && projects.length === 0) return null
 
   return (
-    <section className="home-works container section">
+    <section id="work" className="home-works container section">
       {heading && <h2 className="home-works__heading">{heading}</h2>}
       {intro && <p className="home-works__intro">{intro}</p>}
 

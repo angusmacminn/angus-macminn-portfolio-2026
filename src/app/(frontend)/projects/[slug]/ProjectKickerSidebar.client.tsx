@@ -39,30 +39,53 @@ export function ProjectKickerSidebar({
 
     if (!elements.length) return
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .map((e) => ({
-            id: (e.target as HTMLElement).id,
-            ratio: e.intersectionRatio ?? 0,
-          }))
+    const activationOffset = 112
+    let rafId = 0
 
-        if (!visible.length) return
+    const getActiveSectionId = () => {
+      const atPageBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
 
-        visible.sort((a, b) => b.ratio - a.ratio)
-        setActiveId(visible[0]!.id)
-      },
-      {
-        root: null,
-        rootMargin: '-20% 0px -65% 0px',
-        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
-      },
-    )
+      if (atPageBottom) return elements[elements.length - 1]!.id
 
-    for (const el of elements) observer.observe(el)
+      // Use the last section that has crossed a fixed line in the viewport.
+      // This avoids neighboring sections rapidly swapping active state.
+      let activeEl = elements[0]
 
-    return () => observer.disconnect()
+      for (const el of elements) {
+        const top = el.getBoundingClientRect().top
+        if (top <= activationOffset) {
+          activeEl = el
+          continue
+        }
+        break
+      }
+
+      return activeEl.id
+    }
+
+    const updateActive = () => {
+      const nextActiveId = getActiveSectionId()
+      setActiveId((prevActiveId) => (prevActiveId === nextActiveId ? prevActiveId : nextActiveId))
+    }
+
+    const scheduleUpdate = () => {
+      if (rafId) return
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0
+        updateActive()
+      })
+    }
+
+    updateActive()
+    window.addEventListener('scroll', scheduleUpdate, { passive: true })
+    window.addEventListener('resize', scheduleUpdate)
+
+    return () => {
+      if (rafId) window.cancelAnimationFrame(rafId)
+      window.removeEventListener('scroll', scheduleUpdate)
+      window.removeEventListener('resize', scheduleUpdate)
+    }
   }, [items])
 
   const handleNavigate = (id: string) => {

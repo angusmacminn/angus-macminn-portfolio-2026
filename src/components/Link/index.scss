@@ -16,14 +16,16 @@
   }
 
   &--default {
-    background: var(--primary);
-    color: var(--primary-foreground);
+    // background: var(--primary-green);
+    color: var(--foreground);
     padding: 0.625rem 1rem;
-    border-radius: 0.5rem;
+    // border-radius: 0.5rem;
+    border-bottom: 2px solid var(--primary-green);
+    font-size: var(--subheading-medium);
   }
 
   &--outline {
-    border: 1px solid var(--border);
+    border: 1px solid var(--primary-green);
     padding: 0.625rem 1rem;
     border-radius: 0.5rem;
   }

@@ -17,6 +17,16 @@ export const HeaderNav: React.FC<{
   const navItems = data?.navItems || []
   const contactPanel = data?.contactPanel
 
+  const getHomeSectionHref = (rawUrl?: string | null) => {
+    if (!rawUrl) return null
+
+    const normalized = rawUrl.trim().toLowerCase()
+    if (normalized === '/about' || normalized === 'about' || normalized === '#about') return '/#about'
+    if (normalized === '/work' || normalized === 'work' || normalized === '#work') return '/#work'
+
+    return null
+  }
+
   return (
     <nav
       aria-label="Main"
@@ -38,8 +48,17 @@ export const HeaderNav: React.FC<{
           )
         }
 
+        const sectionHref = getHomeSectionHref(link?.url)
+
         return (
-          <CMSLink key={i} {...link} appearance="link" onClick={onLinkClick ? () => onLinkClick() : undefined} />
+          <CMSLink
+            key={i}
+            {...link}
+            type={sectionHref ? 'custom' : link?.type}
+            url={sectionHref ?? link?.url}
+            appearance="link"
+            onClick={onLinkClick ? () => onLinkClick() : undefined}
+          />
         )
       })}
     </nav>

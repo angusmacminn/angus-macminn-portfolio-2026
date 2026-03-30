@@ -39,6 +39,24 @@
     // letter-spacing: 0.08em;
     color: var(--muted-foreground);
   }
+
+  &__cta {
+    margin: var(--spacing-8) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-4);
+  }
+
+  &__cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+
+  &__cta-icon {
+    flex-shrink: 0;
+  }
 }
 // Tablet and desktop styles
 @media (min-width: 768px) {

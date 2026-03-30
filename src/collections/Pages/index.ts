@@ -8,6 +8,7 @@ import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { slugField } from 'payload'
 import { HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
+import { link } from '../../fields/link'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
 
@@ -87,6 +88,20 @@ export const Pages: CollectionConfig<'pages'> = {
                   name: 'location',
                   label: 'Body text (location)',
                   type: 'textarea',
+                },
+                {
+                  name: 'cta',
+                  type: 'group',
+                  label: 'Call to action',
+                  required: false,
+                  admin: {
+                    description: "Optional button below the hero (e.g. Let's talk, mailto:, or a page).",
+                  },
+                  fields: [
+                    link({
+                      appearances: false,
+                    }),
+                  ],
                 },
               ],
             },
