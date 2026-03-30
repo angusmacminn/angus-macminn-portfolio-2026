@@ -1,4 +1,9 @@
 .home-works {
+  --card-arrow-bg: color-mix(in oklab, var(--background) 88%, var(--foreground));
+  --card-arrow-border: color-mix(in oklab, var(--foreground) 18%, transparent);
+  --card-arrow-fg: var(--foreground);
+  --card-arrow-hover-fg: color-mix(in oklab, var(--foreground) 90%, var(--background) 10%);
+
   padding-top: 3rem;
   padding-bottom: 4rem;
   scroll-margin-top: 8rem;
@@ -48,7 +53,6 @@
     margin-bottom: var(--spacing-4);
   }
 
-  /* Paper: 42px circle #121720, border #2A313C, arrow #E4EBF2 */
   &__card-arrow {
     display: flex;
     flex-shrink: 0;
@@ -57,9 +61,9 @@
     width: 42px;
     height: 42px;
     border-radius: 999px;
-    background-color: #121720;
-    border: 1px solid #2a313c;
-    color: #e4ebf2;
+    background-color: var(--card-arrow-bg);
+    border: 1px solid var(--card-arrow-border);
+    color: var(--card-arrow-fg);
     rotate: -45deg;
     transition:
       border-color 0.3s ease,
@@ -75,7 +79,7 @@
   /* Descendant selector: &__card-arrow nested under &__card:hover would compile incorrectly */
   &__card:hover &__card-arrow {
     background-color: var(--primary-green, #2ffd7b);
-    color: #121720;
+    color: var(--card-arrow-hover-fg);
     rotate: 0deg;
     transition:
       rotate 0.25s ease;
@@ -180,6 +184,13 @@
     text-decoration: underline;
     text-underline-offset: 2px;
   }
+}
+
+[data-theme='dark'] .home-works {
+  --card-arrow-bg: #121720;
+  --card-arrow-border: #2a313c;
+  --card-arrow-fg: #e4ebf2;
+  --card-arrow-hover-fg: #121720;
 }
 
 @media (min-width: 768px) {

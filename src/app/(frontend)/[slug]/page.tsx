@@ -77,7 +77,18 @@ export default async function Page({ params: paramsPromise }: Args) {
             intro={page.worksIntro}
             projects={homeProjects}
           />
-          <HomeAboutSection heading={page.aboutHeading} body={page.aboutBody} image={page.aboutImage} />
+          <HomeAboutSection
+            heading={page.aboutHeading}
+            body={page.aboutBody}
+            image={page.aboutImage}
+            toolsHeading={page.toolsHeading}
+            toolsSubheadingOne={page.toolsSubheadingOne}
+            toolsSubheadingTwo={page.toolsSubheadingTwo}
+            toolsSubheadingThree={page.toolsSubheadingThree}
+            toolsColumnOne={page.toolsColumnOne}
+            toolsColumnTwo={page.toolsColumnTwo}
+            toolsColumnThree={page.toolsColumnThree}
+          />
           
           <HomeServicesSection
             heading={page.servicesHeading}

@@ -107,6 +107,9 @@ export const Pages: CollectionConfig<'pages'> = {
             },
           ],
           label: 'Hero',
+          admin: {
+            condition: (data) => data?.slug === 'home',
+          },
         },
         {
           fields: [
@@ -124,6 +127,9 @@ export const Pages: CollectionConfig<'pages'> = {
         },
         {
           label: 'About',
+          admin: {
+            condition: (data) => data?.slug === 'home',
+          },
           fields: [
             {
               name: 'aboutHeading',
@@ -146,10 +152,106 @@ export const Pages: CollectionConfig<'pages'> = {
               type: 'upload',
               relationTo: 'media',
             },
+            {
+              name: 'toolsHeading',
+              type: 'text',
+              label: 'Tools section heading',
+              defaultValue: 'Tools I Use',
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'toolsSubheadingOne',
+                  type: 'text',
+                  label: 'Tools subheading 1',
+                  defaultValue: 'Front-End Development',
+                  admin: {
+                    width: '33%',
+                  },
+                },
+                {
+                  name: 'toolsSubheadingTwo',
+                  type: 'text',
+                  label: 'Tools subheading 2',
+                  defaultValue: 'Interaction & Motion',
+                  admin: {
+                    width: '33%',
+                  },
+                },
+                {
+                  name: 'toolsSubheadingThree',
+                  type: 'text',
+                  label: 'Tools subheading 3',
+                  defaultValue: 'CMS & Architecture',
+                  admin: {
+                    width: '33%',
+                  },
+                },
+              ],
+            },
+            {
+              name: 'toolsColumnOne',
+              type: 'array',
+              label: 'Tools column 1 items',
+              labels: {
+                singular: 'Tool',
+                plural: 'Tools',
+              },
+              fields: [
+                {
+                  name: 'name',
+                  type: 'text',
+                  required: true,
+                },
+              ],
+              defaultValue: [{ name: 'WordPress' }, { name: 'React' }, { name: 'Next.js' }],
+            },
+            {
+              name: 'toolsColumnTwo',
+              type: 'array',
+              label: 'Tools column 2 items',
+              labels: {
+                singular: 'Tool',
+                plural: 'Tools',
+              },
+              fields: [
+                {
+                  name: 'name',
+                  type: 'text',
+                  required: true,
+                },
+              ],
+              defaultValue: [{ name: 'GSAP' }, { name: 'Framer Motion' }, { name: 'Three.js' }],
+            },
+            {
+              name: 'toolsColumnThree',
+              type: 'array',
+              label: 'Tools column 3 items',
+              labels: {
+                singular: 'Tool',
+                plural: 'Tools',
+              },
+              fields: [
+                {
+                  name: 'name',
+                  type: 'text',
+                  required: true,
+                },
+              ],
+              defaultValue: [
+                { name: 'Headless WordPress' },
+                { name: 'Payload' },
+                { name: 'API-driven systems' },
+              ],
+            },
           ],
         },
         {
           label: 'Works',
+          admin: {
+            condition: (data) => data?.slug === 'home',
+          },
           fields: [
             {
               name: 'worksHeading',
@@ -174,6 +276,9 @@ export const Pages: CollectionConfig<'pages'> = {
         },
         {
           label: 'Services',
+          admin: {
+            condition: (data) => data?.slug === 'home',
+          },
           fields: [
             {
               name: 'servicesHeading',
@@ -201,6 +306,24 @@ export const Pages: CollectionConfig<'pages'> = {
                   type: 'textarea',
                 },
               ],
+            },
+          ],
+        },
+        {
+          label: 'Writing & Playground',
+          admin: {
+            condition: (data) => data?.slug === 'writing' || data?.slug === 'playground',
+          },
+          fields: [
+            {
+              name: 'pageHeading',
+              type: 'text',
+              label: 'Heading',
+            },
+            {
+              name: 'pageSubheading',
+              type: 'textarea',
+              label: 'Subheading',
             },
           ],
         },

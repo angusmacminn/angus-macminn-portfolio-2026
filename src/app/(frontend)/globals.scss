@@ -3,9 +3,20 @@
   --background: #ffffff;
   --foreground: #1f1f1f;
   --card: #f4f4f5;
-  --border: #e4e4e7;
+  --card-gradient: linear-gradient(
+    in oklab 180deg,
+    oklab(95.8% 0.001 0.004) 0%,
+    oklab(92.9% 0 0.002) 100%
+  );
+  --card-gradient-hover: linear-gradient(
+    in oklab 180deg,
+    oklab(92.9% 0 0.002) 0%,
+    oklab(95.8% 0.001 0.004) 100%
+  );
+
+  --border: #c7c7c7;
   --muted: #f4f4f5;
-  --muted-foreground: #70707a;
+  --muted-foreground: #4C4C61;
   --primary: #111111;
   --primary-green: #2ffd7b;
   --primary-foreground: #fafafa; 

@@ -69,6 +69,8 @@ export interface Config {
   collections: {
     pages: Page;
     projects: Project;
+    writing: Writing;
+    playground: Playground;
     media: Media;
     users: User;
     redirects: Redirect;
@@ -87,6 +89,8 @@ export interface Config {
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    writing: WritingSelect<false> | WritingSelect<true>;
+    playground: PlaygroundSelect<false> | PlaygroundSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -194,6 +198,28 @@ export interface Page {
     [k: string]: unknown;
   } | null;
   aboutImage?: (string | null) | Media;
+  toolsHeading?: string | null;
+  toolsSubheadingOne?: string | null;
+  toolsSubheadingTwo?: string | null;
+  toolsSubheadingThree?: string | null;
+  toolsColumnOne?:
+    | {
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  toolsColumnTwo?:
+    | {
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  toolsColumnThree?:
+    | {
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
   worksHeading?: string | null;
   worksIntro?: string | null;
   showFeaturedProjects?: boolean | null;
@@ -207,6 +233,8 @@ export interface Page {
         id?: string | null;
       }[]
     | null;
+  pageHeading?: string | null;
+  pageSubheading?: string | null;
   meta?: {
     title?: string | null;
     /**
@@ -546,6 +574,81 @@ export interface MediaBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "writing".
+ */
+export interface Writing {
+  id: string;
+  title: string;
+  excerpt?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  publishedAt?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "playground".
+ */
+export interface Playground {
+  id: string;
+  title: string;
+  description?: string | null;
+  previewImage?: (string | null) | Media;
+  demoURL?: string | null;
+  repoURL?: string | null;
+  tech?:
+    | {
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  notes?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  publishedAt?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -721,6 +824,14 @@ export interface PayloadLockedDocument {
         value: string | Project;
       } | null)
     | ({
+        relationTo: 'writing';
+        value: string | Writing;
+      } | null)
+    | ({
+        relationTo: 'playground';
+        value: string | Playground;
+      } | null)
+    | ({
         relationTo: 'media';
         value: string | Media;
       } | null)
@@ -815,6 +926,28 @@ export interface PagesSelect<T extends boolean = true> {
   aboutHeading?: T;
   aboutBody?: T;
   aboutImage?: T;
+  toolsHeading?: T;
+  toolsSubheadingOne?: T;
+  toolsSubheadingTwo?: T;
+  toolsSubheadingThree?: T;
+  toolsColumnOne?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  toolsColumnTwo?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  toolsColumnThree?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
   worksHeading?: T;
   worksIntro?: T;
   showFeaturedProjects?: T;
@@ -828,6 +961,8 @@ export interface PagesSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
+  pageHeading?: T;
+  pageSubheading?: T;
   meta?:
     | T
     | {
@@ -951,6 +1086,45 @@ export interface ProjectsSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  publishedAt?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "writing_select".
+ */
+export interface WritingSelect<T extends boolean = true> {
+  title?: T;
+  excerpt?: T;
+  content?: T;
+  publishedAt?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "playground_select".
+ */
+export interface PlaygroundSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  previewImage?: T;
+  demoURL?: T;
+  repoURL?: T;
+  tech?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  notes?: T;
   publishedAt?: T;
   generateSlug?: T;
   slug?: T;

@@ -1,0 +1,88 @@
+.writing-page {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+
+  &__header {
+    margin-bottom: 2.75rem;
+  }
+
+  &__heading {
+    margin: 0 0 0.75rem;
+    font-size: 2.5rem;
+    line-height: 1.05;
+  }
+
+  &__intro {
+    margin: 0;
+    max-width: 42rem;
+    color: var(--muted-foreground);
+  }
+
+  &__list {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  &__post {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  &__meta {
+    margin: 0 0 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  &__post-title {
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+
+  &__post-title a {
+    text-decoration: none;
+  }
+
+  &__post-title a:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  &__excerpt {
+    margin: 0.65rem 0 0;
+    max-width: 44rem;
+    color: var(--muted-foreground);
+  }
+
+  &__post-body {
+    max-width: 48rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  &__post-body p {
+    margin: 0;
+    color: var(--foreground);
+  }
+}
+
+@media (min-width: 768px) {
+  .writing-page {
+    &__heading {
+      font-size: 3.75rem;
+    }
+
+    &__post {
+      padding: 2rem 0;
+    }
+
+    &__post-title {
+      font-size: 1.875rem;
+    }
+  }
+}
+
