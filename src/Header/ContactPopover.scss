@@ -91,13 +91,10 @@
     min-width: 0;
     font-size: 18px;
     line-height: 22px;
-    color: #c8d2dd;
+    color: var(--foreground);
     text-decoration: underline;
     text-underline-offset: 4px;
     word-break: break-word;
-    [data-theme='light'] & {
-      color: var(--foreground);
-    }
   }
 
   &__copy {
@@ -109,14 +106,35 @@
     margin-left: auto;
     border-radius: 10px;
     border: 1px solid var(--border);
-    background: transparent;
-    color: var(--primary-green);
+    background: color-mix(in oklab, var(--muted) 70%, var(--background));
+    color: var(--foreground);
     cursor: pointer;
     flex-shrink: 0;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+
+    &:hover {
+      border-color: color-mix(in oklab, var(--primary-green) 55%, var(--border));
+      background: color-mix(in oklab, var(--primary-green) 14%, var(--background));
+      color: var(--foreground);
+    }
 
     &:focus-visible {
       outline: 2px solid var(--primary-green);
       outline-offset: 2px;
+    }
+
+    [data-theme='dark'] & {
+      background: color-mix(in oklab, var(--foreground) 9%, var(--card));
+      color: var(--foreground);
+
+      &:hover {
+        border-color: color-mix(in oklab, var(--primary-green) 50%, var(--border));
+        background: color-mix(in oklab, var(--primary-green) 18%, var(--card));
+        color: var(--foreground);
+      }
     }
   }
 
@@ -140,9 +158,25 @@
     font-size: 18px;
     line-height: 22px;
     font-weight: 400;
-    color: #050505;
+    color: var(--foreground);
     background: var(--primary-green);
     text-decoration: none;
+    transition:
+      filter 0.2s ease,
+      box-shadow 0.2s ease;
+
+    [data-theme='dark'] & {
+      color: var(--primary-foreground);
+    }
+
+    &:hover {
+      filter: brightness(1.05);
+      box-shadow: 0 0 0 1px color-mix(in oklab, var(--foreground) 12%, transparent);
+    }
+
+    [data-theme='dark'] &:hover {
+      box-shadow: 0 0 0 1px color-mix(in oklab, var(--foreground) 22%, transparent);
+    }
   }
 
   &__socials {
@@ -187,6 +221,16 @@
     display: inline-flex;
     color: inherit;
     text-decoration: none;
+    border-radius: 10px;
+
+    &:focus-visible {
+      outline: 2px solid var(--primary-green);
+      outline-offset: 2px;
+    }
+
+    &:focus-visible .contact-popover__social-tile {
+      border-color: color-mix(in oklab, var(--primary-green) 55%, var(--border));
+    }
   }
 
   &__social-tile {
@@ -197,11 +241,28 @@
     height: 34px;
     border-radius: 10px;
     border: 1px solid var(--border);
-    background: linear-gradient(
-      in oklab 180deg,
-      oklab(55% -0.005 -0.02) 0%,
-      oklab(49.8% -0.002 -0.009) 100%
-    );
+    background: color-mix(in oklab, var(--muted) 70%, var(--background));
     color: var(--foreground);
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+
+    .contact-popover__social-hit:hover & {
+      border-color: color-mix(in oklab, var(--primary-green) 55%, var(--border));
+      background: color-mix(in oklab, var(--primary-green) 14%, var(--background));
+      color: var(--foreground);
+    }
+
+    [data-theme='dark'] & {
+      background: color-mix(in oklab, var(--foreground) 9%, var(--card));
+      color: var(--foreground);
+    }
+  }
+
+  /* Dark hover: keep selector flat so hit → tile order stays correct */
+  [data-theme='dark'] &__social-hit:hover &__social-tile {
+    border-color: color-mix(in oklab, var(--primary-green) 50%, var(--border));
+    background: color-mix(in oklab, var(--primary-green) 18%, var(--card));
   }
 }

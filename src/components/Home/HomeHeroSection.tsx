@@ -1,11 +1,17 @@
-import React from 'react'
+'use client'
+
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import type { Page } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import { ArrowRight } from 'lucide-react'
 
+import { HeroInteractive, type HeroMode } from './HeroInteractive'
 import './home-hero-section.scss'
+
+/** Set false to keep particles in idle on touch devices if tap interaction feels off. */
+const ENABLE_MOBILE_TAP = true
 
 function hasCtaDestination(
   link:
@@ -35,28 +41,112 @@ export const HomeHeroSection: React.FC<Page['hero']> = ({
   const ctaLink = cta?.link
   const showCta = ctaLink?.label?.trim() && hasCtaDestination(ctaLink)
 
+  const [hoverDeveloper, setHoverDeveloper] = useState(false)
+  const [hoverDesigner, setHoverDesigner] = useState(false)
+  const [tapMode, setTapMode] = useState<HeroMode | null>(null)
+  const [coarsePointer, setCoarsePointer] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(false)
+
+  useEffect(() => {
+    const mqCoarse = window.matchMedia('(pointer: coarse)')
+    const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    const applyCoarse = () => setCoarsePointer(mqCoarse.matches)
+    const applyReduce = () => setReducedMotion(mqReduce.matches)
+
+    applyCoarse()
+    applyReduce()
+    mqCoarse.addEventListener('change', applyCoarse)
+    mqReduce.addEventListener('change', applyReduce)
+    return () => {
+      mqCoarse.removeEventListener('change', applyCoarse)
+      mqReduce.removeEventListener('change', applyReduce)
+    }
+  }, [])
+
+  const useTap = ENABLE_MOBILE_TAP && coarsePointer
+
+  const visualMode: HeroMode = useMemo(() => {
+    if (reducedMotion) return 'idle'
+    if (useTap) {
+      return tapMode ?? 'idle'
+    }
+    if (hoverDesigner) return 'designer'
+    if (hoverDeveloper) return 'developer'
+    return 'idle'
+  }, [reducedMotion, useTap, tapMode, hoverDesigner, hoverDeveloper])
+
+  const toggleTapMode = useCallback((next: 'developer' | 'designer') => {
+    setTapMode((prev) => (prev === next ? null : next))
+  }, [])
+
   return (
     <section className="home-hero container section">
-      <div className="home-hero__content">
-        <h1 className="home-hero__heading">{heading}</h1>
-        {position && <p className="home-hero__position">{position}</p>}
-        <h2 className="home-hero__heading-2">Creative Developer and Designer</h2>
-        {subheading && <p className="home-hero__subheading">{subheading}</p>}
-        {location && <p className="home-hero__location">{location}</p>}
-        {showCta && ctaLink ? (
-          <div className="home-hero__cta">
-            <CMSLink
-              {...ctaLink}
-              // Render label via children so we can control layout and icon without double text
-              label={undefined}
-              appearance="default"
-              className="home-hero__cta-link"
+      <div className="home-hero__inner">
+        <div className="home-hero__lead">
+          <h1 className="home-hero__heading">{heading}</h1>
+          {position && <p className="home-hero__position">{position}</p>}
+        </div>
+
+        <HeroInteractive mode={visualMode} reducedMotion={reducedMotion} className="home-hero__interactive" />
+
+        <div className="home-hero__body">
+          <h2 className="home-hero__heading-2">
+            Creative{' '}
+            <span
+              className={`home-hero__hover-text${visualMode === 'developer' ? ' home-hero__hover-text--active' : ''}`}
+              onMouseEnter={() => setHoverDeveloper(true)}
+              onMouseLeave={() => setHoverDeveloper(false)}
+              onClick={() => useTap && toggleTapMode('developer')}
+              aria-label={useTap ? 'Toggle particle view: Developer grid' : undefined}
+              role={useTap ? 'button' : undefined}
+              tabIndex={useTap ? 0 : undefined}
+              onKeyDown={(e) => {
+                if (!useTap) return
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  toggleTapMode('developer')
+                }
+              }}
             >
-              <span>{ctaLink.label}</span>
-              <ArrowRight aria-hidden className="home-hero__cta-icon" size={18} strokeWidth={2} />
-            </CMSLink>
-          </div>
-        ) : null}
+              Developer
+            </span>{' '}
+            and{' '}
+            <span
+              className={`home-hero__hover-text${visualMode === 'designer' ? ' home-hero__hover-text--active' : ''}`}
+              onMouseEnter={() => setHoverDesigner(true)}
+              onMouseLeave={() => setHoverDesigner(false)}
+              onClick={() => useTap && toggleTapMode('designer')}
+              aria-label={useTap ? 'Toggle particle view: Designer motion' : undefined}
+              role={useTap ? 'button' : undefined}
+              tabIndex={useTap ? 0 : undefined}
+              onKeyDown={(e) => {
+                if (!useTap) return
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  toggleTapMode('designer')
+                }
+              }}
+            >
+              Designer
+            </span>
+          </h2>
+          {subheading && <p className="home-hero__subheading">{subheading}</p>}
+          {location && <p className="home-hero__location">{location}</p>}
+          {showCta && ctaLink ? (
+            <div className="home-hero__cta">
+              <CMSLink
+                {...ctaLink}
+                label={undefined}
+                appearance="default"
+                className="home-hero__cta-link"
+              >
+                <span>{ctaLink.label}</span>
+                <ArrowRight aria-hidden className="home-hero__cta-icon" size={18} strokeWidth={2} />
+              </CMSLink>
+            </div>
+          ) : null}
+        </div>
       </div>
     </section>
   )
