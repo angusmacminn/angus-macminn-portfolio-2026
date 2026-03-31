@@ -43,10 +43,12 @@ export default async function WritingPostPage({ params: paramsPromise }: Args) {
 
   if (!post) notFound()
 
+  const metaDate = post.publishedAt ?? post.updatedAt ?? post.createdAt
+
   return (
     <article className="writing-page container">
       <header className="writing-page__header">
-        <p className="writing-page__meta">{formatDate(post.publishedAt ?? post.updatedAt)}</p>
+        {metaDate ? <p className="writing-page__meta">{formatDate(metaDate)}</p> : null}
         <h1 className="writing-page__heading">{post.title}</h1>
         <p className="writing-page__intro">{post.excerpt}</p>
       </header>
