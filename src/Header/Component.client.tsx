@@ -2,7 +2,8 @@
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 
 import type { Header } from '@/payload-types'
 
@@ -11,6 +12,26 @@ import { HeaderNav } from './Nav'
 import './component.client.scss'
 import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 import { X } from 'lucide-react'
+
+/** Strong ease-out */
+const EASE_OUT = [0.23, 1, 0.32, 1] as const
+const DURATION_BACKDROP = 0.22
+const DURATION_BACKDROP_EXIT = 0.16
+const DURATION_PANEL = 0.28
+const DURATION_PANEL_EXIT = 0.2
+const INSTANT = { duration: 0.01 }
+
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const apply = () => setReduce(mq.matches)
+    apply()
+    mq.addEventListener('change', apply)
+    return () => mq.removeEventListener('change', apply)
+  }, [])
+  return reduce
+}
 
 interface HeaderClientProps {
   data: Header
@@ -55,6 +76,11 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const [headerScrollCompact, setHeaderScrollCompact] = useState(false)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
+  const reduceMotion = usePrefersReducedMotion()
+  const menuToggleRef = useRef<HTMLButtonElement>(null)
+  const mobileCloseRef = useRef<HTMLButtonElement>(null)
+  const mobileNavOpenRef = useRef(mobileNavOpen)
+  mobileNavOpenRef.current = mobileNavOpen
 
   useEffect(() => {
     setHeaderTheme(null)
@@ -128,6 +154,36 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
     }
   }, [mobileNavOpen])
 
+  useEffect(() => {
+    if (!mobileNavOpen) return
+    const id = requestAnimationFrame(() => {
+      mobileCloseRef.current?.focus()
+    })
+    return () => cancelAnimationFrame(id)
+  }, [mobileNavOpen])
+
+  const backdropTransition = reduceMotion
+    ? INSTANT
+    : { duration: DURATION_BACKDROP, ease: EASE_OUT }
+
+  const backdropExitTransition = reduceMotion
+    ? INSTANT
+    : { duration: DURATION_BACKDROP_EXIT, ease: EASE_OUT }
+
+  const panelTransition = reduceMotion
+    ? INSTANT
+    : { duration: DURATION_PANEL, ease: EASE_OUT }
+
+  const panelInitial = reduceMotion ? { opacity: 0 } : { opacity: 1, x: '100%' }
+  const panelAnimate = reduceMotion ? { opacity: 1 } : { opacity: 1, x: 0 }
+  const panelExit = reduceMotion
+    ? { opacity: 0, transition: INSTANT }
+    : {
+        opacity: 1,
+        x: '100%',
+        transition: { duration: DURATION_PANEL_EXIT, ease: EASE_OUT },
+      }
+
   return (
     <header
       className={`site-header container${headerScrollCompact ? ' site-header--scroll-compact' : ''}`}
@@ -152,6 +208,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
             <ThemeSelector />
           </div>
           <button
+            ref={menuToggleRef}
             aria-controls="primary-mobile-nav"
             aria-expanded={mobileNavOpen}
             aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
@@ -164,17 +221,40 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
         </div>
       </div>
 
-      {mobileNavOpen ? (
-        <div className="site-header__mobile-overlay">
-          <div
+      <AnimatePresence
+        mode="sync"
+        onExitComplete={() => {
+          if (!mobileNavOpenRef.current) menuToggleRef.current?.focus()
+        }}
+      >
+        {mobileNavOpen ? (
+          <motion.div
+            key="mobile-nav-backdrop"
             aria-hidden
             className="site-header__mobile-backdrop"
-            onClick={() => setMobileNavOpen(false)}
             role="presentation"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: backdropExitTransition }}
+            transition={backdropTransition}
+            onClick={() => setMobileNavOpen(false)}
           />
-          <div className="site-header__mobile-panel" id="primary-mobile-nav" role="dialog" aria-modal="true">
+        ) : null}
+        {mobileNavOpen ? (
+          <motion.div
+            key="mobile-nav-panel"
+            className="site-header__mobile-panel"
+            id="primary-mobile-nav"
+            role="dialog"
+            aria-modal="true"
+            initial={panelInitial}
+            animate={panelAnimate}
+            exit={panelExit}
+            transition={panelTransition}
+          >
             <div className="site-header__mobile-panel-top">
               <button
+                ref={mobileCloseRef}
                 aria-label="Close menu"
                 className="site-header__mobile-close"
                 onClick={() => setMobileNavOpen(false)}
@@ -184,9 +264,9 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
               </button>
             </div>
             <HeaderNav data={data} variant="mobile" onLinkClick={() => setMobileNavOpen(false)} />
-          </div>
-        </div>
-      ) : null}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </header>
   )
 }

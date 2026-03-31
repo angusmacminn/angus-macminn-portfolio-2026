@@ -118,26 +118,20 @@
     }
   }
 
-  &__mobile-overlay {
+  &__mobile-backdrop {
     position: fixed;
     inset: 0;
     z-index: 30;
-    pointer-events: auto;
-  }
-
-  &__mobile-backdrop {
-    position: absolute;
-    inset: 0;
     background: rgba(0, 0, 0, 0.55);
     cursor: pointer;
   }
 
   &__mobile-panel {
-    position: absolute;
+    position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
-    z-index: 1;
+    z-index: 31;
     display: flex;
     flex-direction: column;
     width: 75vw;
@@ -148,6 +142,7 @@
     background: var(--background);
     color: var(--foreground);
     box-shadow: -12px 0 40px rgba(0, 0, 0, 0.12);
+    transform-origin: right center;
   }
 
   &__mobile-panel-top {

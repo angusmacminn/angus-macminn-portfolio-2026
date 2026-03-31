@@ -32,6 +32,7 @@
     border: 1px solid var(--border);
     background: var(--card);
     box-shadow: 0 18px 48px rgba(0, 0, 0, 0.2);
+    transform-origin: top right;
 
     [data-theme='dark'] & {
       background: var(--card-gradient, var(--card));
@@ -47,6 +48,7 @@
     max-width: none;
     margin-top: var(--spacing-3);
     box-shadow: none;
+    transform-origin: top left;
   }
 
   &__sr-only {

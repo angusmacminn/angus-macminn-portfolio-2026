@@ -8,10 +8,31 @@ import { CMSLink } from '@/components/Link'
 import { Mail } from 'lucide-react'
 import { cn } from '@/utilities/ui'
 
+import { motion, AnimatePresence } from 'motion/react'
+
 import './ContactPopover.scss'
 
 type ContactPanel = NonNullable<Header['contactPanel']>
 type SocialPlatform = NonNullable<NonNullable<ContactPanel['socialLinks']>[number]['platform']>
+
+/** Strong ease-out */
+const EASE_OUT = [0.23, 1, 0.32, 1] as const
+const DURATION_PANEL = 0.175
+const DURATION_PANEL_EXIT = 0.12
+const DURATION_TOAST = 0.16
+const DURATION_TRIGGER = 0.12
+
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const apply = () => setReduce(mq.matches)
+    apply()
+    mq.addEventListener('change', apply)
+    return () => mq.removeEventListener('change', apply)
+  }, [])
+  return reduce
+}
 
 const SocialGlyph: React.FC<{ platform: SocialPlatform | string }> = ({ platform }) => {
   const size = 16
@@ -76,6 +97,7 @@ export const ContactPopover: React.FC<{
   const [toastVisible, setToastVisible] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const reduceMotion = usePrefersReducedMotion()
 
   const close = useCallback(() => {
     setOpen(false)
@@ -140,26 +162,52 @@ export const ContactPopover: React.FC<{
     }
   }, [])
 
+  const instant = { duration: 0.01 }
+
+  const panelInitial = reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.97 }
+  const panelAnimate = reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }
+  const panelExit = reduceMotion 
+  ? { opacity: 0, transition: instant }
+  : {opacity: 0,
+     scale: 0.97,
+     transition: {duration: DURATION_PANEL_EXIT, ease: EASE_OUT},
+   }
+
+   const panelTransition = reduceMotion ? instant : {duration: DURATION_PANEL, ease: EASE_OUT}
+   const toastTransition = reduceMotion ? instant : {duration: DURATION_TOAST, ease: EASE_OUT}
+
   return (
+
+    
     <div ref={rootRef} className={cn('contact-popover', variant === 'mobile' && 'contact-popover--mobile')}>
-      <button
+      <motion.button
         aria-controls={id}
         aria-expanded={open}
         aria-haspopup="dialog"
         className={cn('cms-link', 'cms-link--link', 'contact-popover__trigger')}
         type="button"
         onClick={() => setOpen((v) => !v)}
+        whileTap={ reduceMotion ? undefined : {scale: 0.98}}
+        transition={ {duration: DURATION_TRIGGER, ease: EASE_OUT}}
       >
         {label}
-      </button>
+      </motion.button>
 
+      
+      <AnimatePresence>
       {open ? (
-        <div
+        
+        <motion.div
+          key="contact-panel"
           className="contact-popover__panel"
           id={id}
           role="dialog"
           aria-label={heading || `${label} options`}
           onMouseDown={(e) => e.stopPropagation()}
+          initial={panelInitial}
+          animate={panelAnimate}
+          exit={panelExit}
+          transition={panelTransition}
         >
           {heading ? <p className="contact-popover__heading">{heading}</p> : null}
 
@@ -216,14 +264,26 @@ export const ContactPopover: React.FC<{
           ) : null}
 
           {subheading ? <p className="contact-popover__subheading">{subheading}</p> : null}
-        </div>
+        </motion.div>
       ) : null}
+      </AnimatePresence>
 
-      {toastVisible ? (
-        <div className="contact-popover__toast" role="status" aria-live="polite">
-          Copied to clipboard
-        </div>
-      ) : null}
+      <AnimatePresence>
+        {toastVisible ? (
+          <motion.div
+            key="copy-toast"
+            className="contact-popover__toast"
+            role="status"
+            aria-live="polite"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={toastTransition}
+          >
+            Copied to clipboard
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   )
 }
