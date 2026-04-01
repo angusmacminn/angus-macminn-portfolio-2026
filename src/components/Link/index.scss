@@ -11,8 +11,34 @@
   }
 
   &--link {
-    
-    text-underline-offset: 3px;
+    position: relative;
+    text-decoration: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 2px;
+      background-color: var(--primary-green);
+      transform: scaleX(0);
+      transform-origin: right center;
+      transition: transform 0.22s cubic-bezier(0.23, 1, 0.32, 1);
+      pointer-events: none;
+    }
+
+    &:hover::after,
+    &:focus-visible::after {
+      transform: scaleX(1);
+      transform-origin: left center;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &::after {
+        transition-duration: 0.01ms;
+      }
+    }
   }
 
   &--default {
@@ -22,6 +48,8 @@
     // border-radius: 0.5rem;
     border-bottom: 2px solid var(--primary-green);
     font-size: var(--subheading-medium);
+
+    
   }
 
   &--outline {

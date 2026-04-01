@@ -28,6 +28,23 @@ export const CallToAction: Block = {
       }),
       label: false,
     },
+    {
+      name: 'linksBehavior',
+      label: 'Buttons behavior',
+      type: 'select',
+      defaultValue: 'standard',
+      options: [
+        { label: 'Standard links (URLs)', value: 'standard' },
+        {
+          label: 'Contact popover (Header → Contact panel)',
+          value: 'contact',
+        },
+      ],
+      admin: {
+        description:
+          'Contact: each row’s Label is used as the button text; internal/custom URL is ignored. Uses the same panel as a “Contact” nav item.',
+      },
+    },
     linkGroup({
       appearances: ['default', 'outline'],
       overrides: {

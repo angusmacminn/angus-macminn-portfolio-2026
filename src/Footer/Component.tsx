@@ -119,7 +119,7 @@ export async function Footer() {
                   <ul className="site-footer__column-links">
                     {links.map(({ link }, j) => (
                       <li className="site-footer__column-link" key={`${i}-${j}`}>
-                        <CMSLink className="site-footer__link" {...(link as any)} />
+                        <CMSLink appearance="link" className="site-footer__link" {...(link as any)} />
                       </li>
                     ))}
                   </ul>

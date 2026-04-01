@@ -160,10 +160,15 @@ export interface Page {
     subheading?: string | null;
     location?: string | null;
     /**
-     * Optional button below the hero (e.g. Let's talk, mailto:, or a page).
+     * Optional button below the hero. Use Contact popover to reuse the same panel as the header “Contact” item (email, calendar, socials).
      */
-    cta: {
-      link: {
+    cta?: {
+      mode?: ('link' | 'contact') | null;
+      /**
+       * Shown on the button (e.g. Let’s talk).
+       */
+      contactLabel?: string | null;
+      link?: {
         type?: ('reference' | 'custom') | null;
         newTab?: boolean | null;
         reference?:
@@ -484,6 +489,10 @@ export interface CallToActionBlock {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Contact: each row’s Label is used as the button text; internal/custom URL is ignored. Uses the same panel as a “Contact” nav item.
+   */
+  linksBehavior?: ('standard' | 'contact') | null;
   links?:
     | {
         link: {
@@ -905,6 +914,8 @@ export interface PagesSelect<T extends boolean = true> {
         cta?:
           | T
           | {
+              mode?: T;
+              contactLabel?: T;
               link?:
                 | T
                 | {
@@ -983,6 +994,7 @@ export interface PagesSelect<T extends boolean = true> {
  */
 export interface CallToActionBlockSelect<T extends boolean = true> {
   richText?: T;
+  linksBehavior?: T;
   links?:
     | T
     | {

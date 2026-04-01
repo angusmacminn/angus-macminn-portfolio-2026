@@ -18,7 +18,7 @@
   --muted: #f4f4f5;
   --muted-foreground: #4C4C61;
   --primary: #111111;
-  --primary-green: #2ffd7b;
+  --primary-green: #00a85c;
   --primary-foreground: #fafafa; 
   --success: #7bc9e8;
   --warning: #f4d9a4;
@@ -139,6 +139,13 @@ a {
 
 p {
   line-height: 1.75;
+}
+
+button {
+  background: none;
+  border: none;
+  text-decoration: none;
+  
 }
 
 

@@ -1,11 +1,10 @@
 'use client'
 
-import React, { useCallback, useEffect, useId, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 
 import type { Header } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
-import { Mail } from 'lucide-react'
 import { cn } from '@/utilities/ui'
 
 import { motion, AnimatePresence } from 'motion/react'
@@ -86,16 +85,67 @@ const SocialGlyph: React.FC<{ platform: SocialPlatform | string }> = ({ platform
 
 const TOAST_MS = 2800
 
+const PANEL_MAX_WIDTH = 309
+/** Minimum space from viewport edge when fitting the panel */
+const VIEWPORT_EDGE_GUTTER = 16
+
+type DesktopPanelPlacement =
+  | { kind: 'end' }
+  | { kind: 'start' }
+  /** Viewport couldn’t fit flush to trigger; position in px from popover root */
+  | { kind: 'shift'; left: number; width: number }
+
+function computeDesktopPanelPlacement(trigger: DOMRectReadOnly, root: DOMRectReadOnly): DesktopPanelPlacement {
+  const vw = window.innerWidth
+  const g = VIEWPORT_EDGE_GUTTER
+  const panelW = Math.min(PANEL_MAX_WIDTH, vw - 2 * g)
+
+  const leftEdgeIfEndAligned = trigger.right - panelW
+  if (leftEdgeIfEndAligned >= g) {
+    return { kind: 'end' }
+  }
+
+  const rightEdgeIfStartAligned = trigger.left + panelW
+  if (rightEdgeIfStartAligned <= vw - g) {
+    return { kind: 'start' }
+  }
+
+  const clampedLeftInViewport = Math.max(g, Math.min(trigger.right - panelW, vw - panelW - g))
+  return {
+    kind: 'shift',
+    left: clampedLeftInViewport - root.left,
+    width: panelW,
+  }
+}
+
 export const ContactPopover: React.FC<{
   label: string
   panel: ContactPanel | null | undefined
   variant: 'desktop' | 'mobile'
   onNavigate?: () => void
-}> = ({ label, panel, variant, onNavigate }) => {
+  /** Matches CMSLink: `link` for nav-style underline; `default` for bordered CTA buttons */
+  appearance?: 'link' | 'default'
+  /** Extra classes on the trigger (e.g. home-hero__cta-link) */
+  triggerClassName?: string
+  /** Optional trigger content; defaults to `label` */
+  children?: React.ReactNode
+  size?: 'sm' | 'lg' | null
+}> = ({
+  label,
+  panel,
+  variant,
+  onNavigate,
+  appearance = 'link',
+  triggerClassName,
+  children,
+  size,
+}) => {
   const id = useId()
   const [open, setOpen] = useState(false)
   const [toastVisible, setToastVisible] = useState(false)
+  const [desktopPlacement, setDesktopPlacement] = useState<DesktopPanelPlacement>({ kind: 'end' })
   const rootRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const reduceMotion = usePrefersReducedMotion()
 
@@ -162,6 +212,25 @@ export const ContactPopover: React.FC<{
     }
   }, [])
 
+  const measureDesktopPlacement = useCallback(() => {
+    if (variant !== 'desktop') return
+    const trigger = triggerRef.current
+    const root = rootRef.current
+    if (!trigger || !root) return
+    setDesktopPlacement(computeDesktopPanelPlacement(trigger.getBoundingClientRect(), root.getBoundingClientRect()))
+  }, [variant])
+
+  useLayoutEffect(() => {
+    if (!open || variant !== 'desktop') return
+    measureDesktopPlacement()
+    const raf = requestAnimationFrame(measureDesktopPlacement)
+    window.addEventListener('resize', measureDesktopPlacement)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', measureDesktopPlacement)
+    }
+  }, [open, variant, measureDesktopPlacement])
+
   const instant = { duration: 0.01 }
 
   const panelInitial = reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.97 }
@@ -181,16 +250,26 @@ export const ContactPopover: React.FC<{
     
     <div ref={rootRef} className={cn('contact-popover', variant === 'mobile' && 'contact-popover--mobile')}>
       <motion.button
+        ref={triggerRef}
         aria-controls={id}
         aria-expanded={open}
         aria-haspopup="dialog"
-        className={cn('cms-link', 'cms-link--link', 'contact-popover__trigger')}
+        className={cn(
+          'cms-link',
+          appearance === 'default' ? 'cms-link--default' : 'cms-link--link',
+          'contact-popover__trigger',
+          /* Nav link: strip native button chrome and match surrounding text. CTA/default: keep cms-link padding & type. */
+          appearance === 'link' && 'contact-popover__trigger--inherit',
+          size === 'lg' && 'cms-link--size-lg',
+          size === 'sm' && 'cms-link--size-sm',
+          triggerClassName,
+        )}
         type="button"
         onClick={() => setOpen((v) => !v)}
-        whileTap={ reduceMotion ? undefined : {scale: 0.98}}
-        transition={ {duration: DURATION_TRIGGER, ease: EASE_OUT}}
+        whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+        transition={{ duration: DURATION_TRIGGER, ease: EASE_OUT }}
       >
-        {label}
+        {children ?? label}
       </motion.button>
 
       
@@ -199,7 +278,18 @@ export const ContactPopover: React.FC<{
         
         <motion.div
           key="contact-panel"
-          className="contact-popover__panel"
+          className={cn(
+            'contact-popover__panel',
+            variant === 'desktop' &&
+              desktopPlacement.kind === 'end' &&
+              'contact-popover__panel--desktop-end',
+            variant === 'desktop' &&
+              desktopPlacement.kind === 'start' &&
+              'contact-popover__panel--desktop-start',
+            variant === 'desktop' &&
+              desktopPlacement.kind === 'shift' &&
+              'contact-popover__panel--desktop-shift',
+          )}
           id={id}
           role="dialog"
           aria-label={heading || `${label} options`}
@@ -208,6 +298,16 @@ export const ContactPopover: React.FC<{
           animate={panelAnimate}
           exit={panelExit}
           transition={panelTransition}
+          style={
+            variant === 'desktop' && desktopPlacement.kind === 'shift'
+              ? {
+                  left: desktopPlacement.left,
+                  width: desktopPlacement.width,
+                  right: 'auto',
+                  transformOrigin: 'top left',
+                }
+              : undefined
+          }
         >
           {heading ? <p className="contact-popover__heading">{heading}</p> : null}
 

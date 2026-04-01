@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import type { Project } from '@/payload-types'
+import type { Header, Project } from '@/payload-types'
 
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
@@ -12,6 +12,7 @@ import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { HomeAboutSection, HomeHeroSection, HomeServicesSection, HomeWorksSection } from '@/components/Home'
+import { getCachedGlobal } from '@/utilities/getGlobals'
 import './page.scss'
 
 export async function generateStaticParams() {
@@ -60,6 +61,8 @@ export default async function Page({ params: paramsPromise }: Args) {
   const { hero, layout } = page
   const isHomePage = decodedSlug === 'home'
   const homeProjects = isHomePage ? await queryHomeProjects(page, draft) : []
+  const headerData = (await getCachedGlobal('header', 1)()) as Header
+  const contactPanel = headerData?.contactPanel
 
   return (
     <article className="content-page">
@@ -69,7 +72,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       {draft && <LivePreviewListener />}
 
-      <HomeHeroSection {...hero} />
+      <HomeHeroSection {...hero} contactPanel={contactPanel} />
       {isHomePage ? (
         <>
         <HomeWorksSection
@@ -95,10 +98,10 @@ export default async function Page({ params: paramsPromise }: Args) {
             intro={page.servicesIntro}
             services={page.services}
           />
-          <RenderBlocks blocks={layout || []} />
+          <RenderBlocks blocks={layout || []} contactPanel={contactPanel} />
         </>
       ) : (
-        <RenderBlocks blocks={layout || []} />
+        <RenderBlocks blocks={layout || []} contactPanel={contactPanel} />
       )}
     </article>
   )

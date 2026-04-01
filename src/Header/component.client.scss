@@ -11,8 +11,7 @@
     justify-content: space-between;
     align-items: center;
     gap: var(--spacing-4);
-    padding: 2rem 0;
-    transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: var(--spacing-4) 0;
   }
 
   &__start {
@@ -29,12 +28,6 @@
     gap: var(--spacing-3);
     min-width: 0;
     max-width: min(75vw, 22rem);
-    opacity: 1;
-    transition:
-      max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-      opacity 0.28s ease,
-      gap 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-      transform 0.28s ease;
     overflow: hidden;
     flex-shrink: 1;
   }
@@ -47,7 +40,7 @@
   }
 
   &__logo {
-    filter: invert(1);
+    // filter: invert(1);
   }
 
   &__theme--mobile {
@@ -94,28 +87,6 @@
 
   &__menu-icon {
     display: block;
-  }
-
-  /* Scroll down: tighter vertical padding on all breakpoints */
-  &--scroll-compact {
-    .site-header__inner {
-      padding: var(--spacing-5) 0;
-    }
-
-    /* Mobile only: also hide logo + theme; nav button stays visible */
-    @media (max-width: 767px) {
-      .site-header__inner {
-        padding: var(--spacing-4) 0;
-      }
-
-      .site-header__start-collapsible {
-        max-width: 0;
-        opacity: 0;
-        gap: 0;
-        pointer-events: none;
-        transform: translateX(-6px);
-      }
-    }
   }
 
   &__mobile-backdrop {

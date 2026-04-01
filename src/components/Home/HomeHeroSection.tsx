@@ -2,9 +2,10 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import type { Page } from '@/payload-types'
+import type { Header, Page } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
+import { ContactPopover } from '@/Header/ContactPopover'
 import { ArrowRight } from 'lucide-react'
 
 import { HeroInteractive, type HeroMode } from './HeroInteractive'
@@ -29,17 +30,18 @@ function hasCtaDestination(
   return Boolean(link.url?.trim() || link.reference)
 }
 
-export const HomeHeroSection: React.FC<Page['hero']> = ({
-  heading,
-  location,
-  position,
-  subheading,
-  cta,
-}) => {
+export const HomeHeroSection: React.FC<
+  Page['hero'] & { contactPanel?: Header['contactPanel'] | null }
+> = ({ heading, location, position, subheading, cta, contactPanel }) => {
   if (!heading) return null
 
+  const ctaMode = cta?.mode ?? 'link'
   const ctaLink = cta?.link
-  const showCta = ctaLink?.label?.trim() && hasCtaDestination(ctaLink)
+  const contactLabel = cta?.contactLabel?.trim()
+  const showContactCta = ctaMode === 'contact' && Boolean(contactLabel)
+  const showLinkCta =
+    ctaMode === 'link' && Boolean(ctaLink?.label?.trim()) && hasCtaDestination(ctaLink)
+  const showCta = showContactCta || showLinkCta
 
   const [hoverDeveloper, setHoverDeveloper] = useState(false)
   const [hoverDesigner, setHoverDesigner] = useState(false)
@@ -132,18 +134,40 @@ export const HomeHeroSection: React.FC<Page['hero']> = ({
             </span>
           </h2>
           {subheading && <p className="home-hero__subheading">{subheading}</p>}
-          {location && <p className="home-hero__location">{location}</p>}
-          {showCta && ctaLink ? (
+          {location ? (
+            <div className="home-hero__location-row">
+              <span className="home-hero__location-glow" aria-hidden />
+              <p className="home-hero__location">{location}</p>
+            </div>
+          ) : null}
+          {showCta ? (
             <div className="home-hero__cta">
-              <CMSLink
-                {...ctaLink}
-                label={undefined}
-                appearance="default"
-                className="home-hero__cta-link"
-              >
-                <span>{ctaLink.label}</span>
-                <ArrowRight aria-hidden className="home-hero__cta-icon" size={18} strokeWidth={2} />
-              </CMSLink>
+              {showContactCta && contactLabel ? (
+                <ContactPopover
+                  appearance="default"
+                  label={contactLabel}
+                  panel={contactPanel}
+                  triggerClassName="home-hero__cta-link"
+                  variant="desktop"
+                >
+                  <span>{contactLabel}</span>
+                  <span className="home-hero__cta-icon-wrap" aria-hidden>
+                    <ArrowRight className="home-hero__cta-icon" size={24} strokeWidth={2} />
+                  </span>
+                </ContactPopover>
+              ) : ctaLink ? (
+                <CMSLink
+                  {...ctaLink}
+                  label={undefined}
+                  appearance="default"
+                  className="home-hero__cta-link"
+                >
+                  <span>{ctaLink.label}</span>
+                  <span className="home-hero__cta-icon-wrap" aria-hidden>
+                    <ArrowRight className="home-hero__cta-icon" size={24} strokeWidth={2} />
+                  </span>
+                </CMSLink>
+              ) : null}
             </div>
           ) : null}
         </div>

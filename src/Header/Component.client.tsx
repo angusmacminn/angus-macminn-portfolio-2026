@@ -73,7 +73,6 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   /* Storing the value in a useState to avoid hydration errors */
   const [theme, setTheme] = useState<string | null>(null)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
-  const [headerScrollCompact, setHeaderScrollCompact] = useState(false)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
   const reduceMotion = usePrefersReducedMotion()
@@ -112,49 +111,6 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   }, [headerTheme])
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    let raf = 0
-    let lastY = window.scrollY
-
-    const tick = () => {
-      const y = window.scrollY
-      if (mobileNavOpen) {
-        setHeaderScrollCompact(false)
-        lastY = y
-        return
-      }
-
-      const delta = y - lastY
-      const threshold = 56
-
-      if (y < threshold * 0.4) {
-        setHeaderScrollCompact(false)
-      } else if (delta > 2) {
-        setHeaderScrollCompact(true)
-      } else if (delta < -2) {
-        setHeaderScrollCompact(false)
-      }
-      lastY = y
-    }
-
-    const onScrollOrResize = () => {
-      cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(tick)
-    }
-
-    onScrollOrResize()
-    window.addEventListener('scroll', onScrollOrResize, { passive: true })
-    window.addEventListener('resize', onScrollOrResize)
-
-    return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener('scroll', onScrollOrResize)
-      window.removeEventListener('resize', onScrollOrResize)
-    }
-  }, [mobileNavOpen])
-
-  useEffect(() => {
     if (!mobileNavOpen) return
     const id = requestAnimationFrame(() => {
       mobileCloseRef.current?.focus()
@@ -185,39 +141,38 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
       }
 
   return (
-    <header
-      className={`site-header container${headerScrollCompact ? ' site-header--scroll-compact' : ''}`}
-      {...(theme ? { 'data-theme': theme } : {})}
-    >
-      <div className="site-header__inner">
-        <div className="site-header__start">
-          <div className="site-header__start-collapsible">
-            <Link href="/">
-              <Logo loading="eager" priority="high" className="site-header__logo" />
-            </Link>
-            <div className="site-header__theme site-header__theme--mobile">
-              <ThemeSelector />
+    <header className="site-header" {...(theme ? { 'data-theme': theme } : {})}>
+      <div className="container">
+        <div className="site-header__inner">
+          <div className="site-header__start">
+            <div className="site-header__start-collapsible">
+              <Link href="/">
+                <Logo loading="eager" priority="high" className="site-header__logo" />
+              </Link>
+              <div className="site-header__theme site-header__theme--mobile">
+                <ThemeSelector />
+              </div>
             </div>
           </div>
-        </div>
 
-        <HeaderNav data={data} variant="desktop" />
+          <HeaderNav data={data} variant="desktop" />
 
-        <div className="site-header__end">
-          <div className="site-header__theme site-header__theme--desktop">
-            <ThemeSelector />
+          <div className="site-header__end">
+            <div className="site-header__theme site-header__theme--desktop">
+              <ThemeSelector />
+            </div>
+            <button
+              ref={menuToggleRef}
+              aria-controls="primary-mobile-nav"
+              aria-expanded={mobileNavOpen}
+              aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
+              className="site-header__menu-toggle"
+              onClick={() => setMobileNavOpen((o) => !o)}
+              type="button"
+            >
+              <MobileMenuIcon open={mobileNavOpen} />
+            </button>
           </div>
-          <button
-            ref={menuToggleRef}
-            aria-controls="primary-mobile-nav"
-            aria-expanded={mobileNavOpen}
-            aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
-            className="site-header__menu-toggle"
-            onClick={() => setMobileNavOpen((o) => !o)}
-            type="button"
-          >
-            <MobileMenuIcon open={mobileNavOpen} />
-          </button>
         </div>
       </div>
 

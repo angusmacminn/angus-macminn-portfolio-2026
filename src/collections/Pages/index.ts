@@ -95,11 +95,39 @@ export const Pages: CollectionConfig<'pages'> = {
                   label: 'Call to action',
                   required: false,
                   admin: {
-                    description: "Optional button below the hero (e.g. Let's talk, mailto:, or a page).",
+                    description:
+                      'Optional button below the hero. Use Contact popover to reuse the same panel as the header “Contact” item (email, calendar, socials).',
                   },
                   fields: [
+                    {
+                      name: 'mode',
+                      label: 'CTA behavior',
+                      type: 'select',
+                      defaultValue: 'link',
+                      options: [
+                        { label: 'Link (page or custom URL)', value: 'link' },
+                        {
+                          label: 'Open contact popover (Header → Contact panel)',
+                          value: 'contact',
+                        },
+                      ],
+                    },
+                    {
+                      name: 'contactLabel',
+                      type: 'text',
+                      label: 'Button label',
+                      admin: {
+                        condition: (_data, siblingData) => siblingData?.mode === 'contact',
+                        description: 'Shown on the button (e.g. Let’s talk).',
+                      },
+                    },
                     link({
                       appearances: false,
+                      overrides: {
+                        admin: {
+                          condition: (_data, siblingData) => siblingData?.mode !== 'contact',
+                        },
+                      },
                     }),
                   ],
                 },
