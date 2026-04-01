@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 
+import { CMSLink } from '@/components/Link'
+import { ArrowRight } from 'lucide-react'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
@@ -7,7 +9,6 @@ import configPromise from '@payload-config'
 import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
 import { draftMode } from 'next/headers'
 import { cache } from 'react'
-import Link from 'next/link'
 import './page.scss'
 import { ProjectKickerSidebar } from './ProjectKickerSidebar.client'
 
@@ -81,14 +82,18 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
 
             <div className="project-page__meta">
               {project.projectURL && (
-                <Link
-                  className="project-page__visit-link"
-                  href={project.projectURL}
-                  rel="noreferrer"
-                  target="_blank"
+                <CMSLink
+                  appearance="default"
+                  className="cta-link"
+                  newTab
+                  type="custom"
+                  url={project.projectURL}
                 >
-                  Visit Site
-                </Link>
+                  <span>Visit Site</span>
+                  <span className="cta-link__icon-wrap" aria-hidden>
+                    <ArrowRight className="cta-link__icon" size={24} strokeWidth={2} />
+                  </span>
+                </CMSLink>
               )}
             </div>
           </header>

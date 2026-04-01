@@ -147,12 +147,12 @@ export const HomeHeroSection: React.FC<
                   appearance="default"
                   label={contactLabel}
                   panel={contactPanel}
-                  triggerClassName="home-hero__cta-link"
+                  triggerClassName="cta-link"
                   variant="desktop"
                 >
                   <span>{contactLabel}</span>
-                  <span className="home-hero__cta-icon-wrap" aria-hidden>
-                    <ArrowRight className="home-hero__cta-icon" size={24} strokeWidth={2} />
+                  <span className="cta-link__icon-wrap" aria-hidden>
+                    <ArrowRight className="cta-link__icon" size={24} strokeWidth={2} />
                   </span>
                 </ContactPopover>
               ) : ctaLink ? (
@@ -160,11 +160,11 @@ export const HomeHeroSection: React.FC<
                   {...ctaLink}
                   label={undefined}
                   appearance="default"
-                  className="home-hero__cta-link"
+                  className="cta-link"
                 >
                   <span>{ctaLink.label}</span>
-                  <span className="home-hero__cta-icon-wrap" aria-hidden>
-                    <ArrowRight className="home-hero__cta-icon" size={24} strokeWidth={2} />
+                  <span className="cta-link__icon-wrap" aria-hidden>
+                    <ArrowRight className="cta-link__icon" size={24} strokeWidth={2} />
                   </span>
                 </CMSLink>
               ) : null}
