@@ -1,0 +1,26 @@
+diff --git a/node_modules/dialkit/dist/index.js b/node_modules/dialkit/dist/index.js
+index 8500ff2..95ae9d1 100644
+--- a/node_modules/dialkit/dist/index.js
++++ b/node_modules/dialkit/dist/index.js
+@@ -827,7 +827,7 @@ function Slider({
+     if (isValueHovered && !showInput && !isValueEditable) {
+       hoverTimeoutRef.current = setTimeout(() => {
+         setIsValueEditable(true);
+-      }, 800);
++      }, 120);
+     } else if (!isValueHovered && !showInput) {
+       if (hoverTimeoutRef.current) {
+         clearTimeout(hoverTimeoutRef.current);
+diff --git a/node_modules/dialkit/dist/styles.css b/node_modules/dialkit/dist/styles.css
+index 4fe1b4b..8ec9a08 100644
+--- a/node_modules/dialkit/dist/styles.css
++++ b/node_modules/dialkit/dist/styles.css
+@@ -380,7 +380,7 @@
+   transform: translateY(-50%);
+   width: 4ch;
+   min-width: 3ch;
+-  max-width: 6ch;
++  max-width: 10ch;
+   font-size: 13px;
+   font-weight: 500;
+   font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;

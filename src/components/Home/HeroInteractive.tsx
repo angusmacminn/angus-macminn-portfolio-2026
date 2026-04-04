@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef } from 'react'
 
+import { HERO_ICON_CUBE_PATH, HERO_ICON_GRID_PATH, HERO_ICON_VIEWBOX } from './heroIconPaths'
+
 export type HeroMode = 'idle' | 'developer' | 'designer'
 
 type Props = {
@@ -10,11 +12,68 @@ type Props = {
   className?: string
 }
 
-const PARTICLE_COUNT = 200
-const COLS = 20
-const ROWS = 10
+const PARTICLE_COUNT = 500
 const DAMPING = 0.92
 const SPRING = 0.06
+/** Thickness of the morphed icon “cloud” (fraction of icon size, px applied in resize). */
+const MORPH_GOAL_JITTER = 0.042
+/** Golden-ratio spacing along path length so particles don’t line up by index on long edges. */
+const PHI = 1.618033988749895
+
+/** Increment when `samplePathNormalized` changes so HMR doesn’t keep stale arrays. */
+const ICON_SAMPLE_REVISION = 2
+let cachedSampleRev = 0
+let cachedDevNorm: { nx: Float32Array; ny: Float32Array } | null = null
+let cachedDesNorm: { nx: Float32Array; ny: Float32Array } | null = null
+
+function samplePathNormalized(d: string, count: number, viewBox: number): { nx: Float32Array; ny: Float32Array } {
+  const nx = new Float32Array(count)
+  const ny = new Float32Array(count)
+
+  const circleFallback = () => {
+    for (let i = 0; i < count; i++) {
+      const t = (i / Math.max(1, count)) * Math.PI * 2
+      nx[i] = 0.5 + 0.32 * Math.cos(t)
+      ny[i] = 0.5 + 0.32 * Math.sin(t)
+    }
+    return { nx, ny }
+  }
+
+  if (typeof document === 'undefined') return circleFallback()
+
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+  path.setAttribute('d', d)
+  let len = 0
+  try {
+    len = path.getTotalLength()
+  } catch {
+    len = 0
+  }
+  if (!len || !Number.isFinite(len)) return circleFallback()
+
+  for (let i = 0; i < count; i++) {
+    const u = count === 1 ? 0 : (i * PHI) % 1
+    const dist = u * len
+    const p = path.getPointAtLength(dist)
+    nx[i] = p.x / viewBox
+    ny[i] = p.y / viewBox
+  }
+  return { nx, ny }
+}
+
+function getIconNormSamples(): {
+  dev: { nx: Float32Array; ny: Float32Array }
+  des: { nx: Float32Array; ny: Float32Array }
+} {
+  if (cachedSampleRev !== ICON_SAMPLE_REVISION) {
+    cachedSampleRev = ICON_SAMPLE_REVISION
+    cachedDevNorm = null
+    cachedDesNorm = null
+  }
+  if (!cachedDevNorm) cachedDevNorm = samplePathNormalized(HERO_ICON_GRID_PATH, PARTICLE_COUNT, HERO_ICON_VIEWBOX)
+  if (!cachedDesNorm) cachedDesNorm = samplePathNormalized(HERO_ICON_CUBE_PATH, PARTICLE_COUNT, HERO_ICON_VIEWBOX)
+  return { dev: cachedDevNorm, des: cachedDesNorm }
+}
 
 function clamp01(n: number) {
   return Math.max(0, Math.min(1, n))
@@ -66,8 +125,10 @@ export function HeroInteractive({ mode, reducedMotion, className }: Props) {
     const y = new Float32Array(PARTICLE_COUNT)
     const vx = new Float32Array(PARTICLE_COUNT)
     const vy = new Float32Array(PARTICLE_COUNT)
-    const gx = new Float32Array(PARTICLE_COUNT)
-    const gy = new Float32Array(PARTICLE_COUNT)
+    const goalDevX = new Float32Array(PARTICLE_COUNT)
+    const goalDevY = new Float32Array(PARTICLE_COUNT)
+    const goalDesX = new Float32Array(PARTICLE_COUNT)
+    const goalDesY = new Float32Array(PARTICLE_COUNT)
     const phase = new Float32Array(PARTICLE_COUNT)
     const anchorX = new Float32Array(PARTICLE_COUNT)
     const anchorY = new Float32Array(PARTICLE_COUNT)
@@ -87,8 +148,7 @@ export function HeroInteractive({ mode, reducedMotion, className }: Props) {
       const cs = getComputedStyle(root as Element)
       const fg = parseCssColor(cs.getPropertyValue('--foreground')) || { r: 30, g: 30, b: 30 }
       const accent = parseCssColor(cs.getPropertyValue('--primary-green')) || { r: 47, g: 253, b: 123 }
-      const muted = parseCssColor(cs.getPropertyValue('--muted-foreground')) || { r: 112, g: 112, b: 122 }
-      return { fg, accent, muted }
+      return { fg, accent }
     }
 
     let colors = readThemeColors(canvasEl)
@@ -105,27 +165,32 @@ export function HeroInteractive({ mode, reducedMotion, className }: Props) {
       c2d.setTransform(dpr, 0, 0, dpr, 0, 0)
 
       const pad = Math.min(cssW, cssH) * 0.08
-      const gw = cssW - pad * 2
-      const gh = cssH - pad * 2
-      let idx = 0
-      for (let row = 0; row < ROWS; row++) {
-        for (let col = 0; col < COLS; col++) {
-          if (idx >= PARTICLE_COUNT) break
-          gx[idx] = pad + (col / (COLS - 1)) * gw
-          gy[idx] = pad + (row / (ROWS - 1)) * gh
-          idx++
-        }
-      }
-      while (idx < PARTICLE_COUNT) {
-        gx[idx] = pad + (Math.random() * gw || 0)
-        gy[idx] = pad + (Math.random() * gh || 0)
-        idx++
+      const innerW = cssW - pad * 2
+      const innerH = cssH - pad * 2
+      const iconSize = Math.min(innerW, innerH) * 0.72
+      const ox = pad + (innerW - iconSize) / 2
+      const oy = pad + (innerH - iconSize) / 2
+
+      const { dev, des } = getIconNormSamples()
+      const jMag = iconSize * MORPH_GOAL_JITTER
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const ph = phase[i]!
+        const jx = Math.sin(ph * 4.2 + i * 0.17) * jMag
+        const jy = Math.cos(ph * 3.1 + i * 0.19) * jMag
+        const jx2 = Math.sin(ph * 3.8 + i * 0.21) * jMag
+        const jy2 = Math.cos(ph * 4.4 + i * 0.15) * jMag
+        goalDevX[i] = ox + dev.nx[i]! * iconSize + jx
+        goalDevY[i] = oy + dev.ny[i]! * iconSize + jy
+        goalDesX[i] = ox + des.nx[i]! * iconSize + jx2
+        goalDesY[i] = oy + des.ny[i]! * iconSize + jy2
       }
 
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         if (x[i] === 0 && y[i] === 0) {
-          x[i] = gx[i] + (Math.random() - 0.5) * 40
-          y[i] = gy[i] + (Math.random() - 0.5) * 40
+          const cx = cssW * 0.5 + (anchorX[i]! - 0.5) * cssW * 0.55
+          const cy = cssH * 0.5 + (anchorY[i]! - 0.5) * cssH * 0.55
+          x[i] = cx + (Math.random() - 0.5) * 40
+          y[i] = cy + (Math.random() - 0.5) * 40
         } else {
           x[i] = clamp01(x[i] / (cssW || 1)) * cssW
           y[i] = clamp01(y[i] / (cssH || 1)) * cssH
@@ -219,25 +284,34 @@ export function HeroInteractive({ mode, reducedMotion, className }: Props) {
         }
 
         if (wd > 0.01) {
-          const dx = gx[i]! - x[i]!
-          const dy = gy[i]! - y[i]!
-          fx += wd * dx * SPRING * 1.15
-          fy += wd * dy * SPRING * 1.15
+          const dx = goalDevX[i]! - x[i]!
+          const dy = goalDevY[i]! - y[i]!
+          fx += wd * dx * SPRING * 1.05
+          fy += wd * dy * SPRING * 1.05
+          if (!reducedRef.current && wd > 0.35) {
+            const shimmer = 0.22 * clamp01((wd - 0.35) / 0.65)
+            fx += wd * Math.sin(time * 2.1 + phase[i]! * 3) * shimmer
+            fy += wd * Math.cos(time * 1.85 + phase[i]! * 2.6) * shimmer
+          }
         }
 
         if (ws > 0.01) {
-          const amp = 22 + Math.sin(time + phase[i]!) * 8
-          const ox = Math.sin(time * 2.2 + phase[i]! * 4) * amp
-          const oy = Math.cos(time * 1.8 + phase[i]! * 3.7) * amp
-          const tx = gx[i]! + ox
-          const ty = gy[i]! + oy
-          const dx = tx - x[i]!
-          const dy = ty - y[i]!
-          fx += ws * dx * SPRING * 0.85
-          fy += ws * dy * SPRING * 0.85
-          const burst = Math.sin(time * 4 + i) * 0.6
-          fx += ws * burst
-          fy += ws * Math.cos(time * 3.5 + i * 0.2) * 0.6
+          const dx = goalDesX[i]! - x[i]!
+          const dy = goalDesY[i]! - y[i]!
+          fx += ws * dx * SPRING * 1.05
+          fy += ws * dy * SPRING * 1.05
+          if (!reducedRef.current && ws > 0.35) {
+            const shimmer = 0.22 * clamp01((ws - 0.35) / 0.65)
+            fx += ws * Math.sin(time * 2.05 + phase[i]! * 2.9) * shimmer
+            fy += ws * Math.cos(time * 1.9 + phase[i]! * 2.5) * shimmer
+          }
+        }
+
+        const wm = Math.max(wd, ws)
+        if (wm > 0.12 && !reducedRef.current) {
+          const breathe = 0.08 * wm
+          fx += Math.sin(time * 1.6 + phase[i]! * 2.4) * breathe
+          fy += Math.cos(time * 1.45 + phase[i]! * 2.1) * breathe
         }
 
         vx[i]! += fx * (dt / 16)
@@ -252,13 +326,14 @@ export function HeroInteractive({ mode, reducedMotion, className }: Props) {
 
       c2d.clearRect(0, 0, cssW, cssH)
 
-      const { fg, accent, muted } = colors
-      const designerGlow = ws > 0.35
+      const { fg, accent } = colors
+      const glowT = Math.max(ws, wd)
+      const iconGlow = glowT > 0.35
 
-      if (designerGlow) {
+      if (iconGlow) {
         c2d.save()
-        c2d.shadowColor = `rgba(${accent.r},${accent.g},${accent.b},${0.42 * clamp01(ws)})`
-        c2d.shadowBlur = 14 * ws
+        c2d.shadowColor = `rgba(${accent.r},${accent.g},${accent.b},${0.42 * clamp01(glowT)})`
+        c2d.shadowBlur = 14 * glowT
       }
 
       for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -270,17 +345,14 @@ export function HeroInteractive({ mode, reducedMotion, className }: Props) {
         let cb = fg.b
         let a = 0.35 + wi * 0.25 + wd * 0.35 + ws * 0.35
 
-        if (ws > 0.2) {
-          const mix = clamp01((ws - 0.2) / 0.8)
-          cr = Math.round(fg.r + (accent.r - fg.r) * mix * 0.85)
-          cg = Math.round(fg.g + (accent.g - fg.g) * mix * 0.85)
-          cb = Math.round(fg.b + (accent.b - fg.b) * mix * 0.85)
-          a = Math.min(1, a + mix * 0.45)
-        } else if (wd > 0.6) {
-          const mix = (wd - 0.6) / 0.4
-          cr = Math.round(fg.r + (muted.r - fg.r) * mix * 0.4)
-          cg = Math.round(fg.g + (muted.g - fg.g) * mix * 0.4)
-          cb = Math.round(fg.b + (muted.b - fg.b) * mix * 0.4)
+        let accentMix = 0
+        if (ws > 0.2) accentMix = Math.max(accentMix, clamp01((ws - 0.2) / 0.8))
+        if (wd > 0.2) accentMix = Math.max(accentMix, clamp01((wd - 0.2) / 0.8))
+        if (accentMix > 0) {
+          cr = Math.round(fg.r + (accent.r - fg.r) * accentMix * 0.85)
+          cg = Math.round(fg.g + (accent.g - fg.g) * accentMix * 0.85)
+          cb = Math.round(fg.b + (accent.b - fg.b) * accentMix * 0.85)
+          a = Math.min(1, a + accentMix * 0.45)
         }
 
         c2d.fillStyle = `rgba(${cr},${cg},${cb},${a})`
@@ -289,7 +361,7 @@ export function HeroInteractive({ mode, reducedMotion, className }: Props) {
         c2d.fill()
       }
 
-      if (designerGlow) {
+      if (iconGlow) {
         c2d.restore()
       }
     }
