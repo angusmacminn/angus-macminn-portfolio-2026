@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 
 import { CMSLink } from '@/components/Link'
-import { ArrowRight } from 'lucide-react'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
@@ -84,15 +83,11 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
               {project.projectURL && (
                 <CMSLink
                   appearance="default"
-                  className="cta-link"
                   newTab
                   type="custom"
                   url={project.projectURL}
                 >
-                  <span>Visit Site</span>
-                  <span className="cta-link__icon-wrap" aria-hidden>
-                    <ArrowRight className="cta-link__icon" size={24} strokeWidth={2} />
-                  </span>
+                  Visit Site
                 </CMSLink>
               )}
             </div>

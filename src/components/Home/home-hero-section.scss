@@ -131,10 +131,107 @@
     gap: var(--spacing-4);
   }
 
+  &__cta-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    overflow: hidden;
+    isolation: isolate;
+    transition: color 0.28s cubic-bezier(0.23, 1, 0.32, 1);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-color: var(--primary-green);
+      transform: scaleY(0);
+      transform-origin: bottom center;
+      transition: transform 0.32s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: var(--primary-foreground);
+
+      &::before {
+        transform: scaleY(1);
+      }
+    }
+
+    > span {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  &__cta-icon-wrap {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__cta-icon {
+    flex-shrink: 0;
+    display: block;
+  }
+
+  /* Arrow hidden until hover/focus on fine-pointer devices */
+  @media (hover: hover) and (pointer: fine) {
+    &__cta-link {
+      gap: 0;
+      transition:
+        gap 0.26s cubic-bezier(0.23, 1, 0.32, 1),
+        color 0.28s cubic-bezier(0.23, 1, 0.32, 1);
+
+      &:hover,
+      &:focus-visible {
+        gap: var(--spacing-3);
+      }
+    }
+
+    &__cta-icon-wrap {
+      max-width: 0;
+      opacity: 0;
+      overflow: hidden;
+      transform: translate3d(-6px, 0, 0);
+      transition:
+        max-width 0.26s cubic-bezier(0.23, 1, 0.32, 1),
+        opacity 0.2s ease,
+        transform 0.26s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    &__cta-link:hover &__cta-icon-wrap,
+    &__cta-link:focus-visible &__cta-icon-wrap {
+      max-width: 1.5rem;
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     &__location-glow {
       animation: none;
       opacity: 0.92;
+    }
+
+    &__cta-link {
+      gap: var(--spacing-3);
+      transition: none;
+
+      &::before {
+        transition-duration: 0.01ms;
+      }
+    }
+
+    &__cta-icon-wrap {
+      max-width: none;
+      opacity: 1;
+      transform: none;
+      transition: none;
+      overflow: visible;
     }
   }
 }

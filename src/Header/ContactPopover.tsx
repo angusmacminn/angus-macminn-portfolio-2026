@@ -125,7 +125,7 @@ export const ContactPopover: React.FC<{
   onNavigate?: () => void
   /** Matches CMSLink: `link` for nav-style underline; `default` for bordered CTA buttons */
   appearance?: 'link' | 'default'
-  /** Extra classes on the trigger (e.g. cta-link for hero-style fill + arrow) */
+  /** Extra classes on the trigger (e.g. home-hero__cta-link) */
   triggerClassName?: string
   /** Optional trigger content; defaults to `label` */
   children?: React.ReactNode
