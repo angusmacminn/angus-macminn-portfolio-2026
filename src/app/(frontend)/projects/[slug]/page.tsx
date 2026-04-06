@@ -83,11 +83,12 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
               {project.projectURL && (
                 <CMSLink
                   appearance="default"
+                  className="home-hero__cta-link project-page__visit-site-link"
                   newTab
                   type="custom"
                   url={project.projectURL}
                 >
-                  Visit Site
+                  <span>Visit Site</span>
                 </CMSLink>
               )}
             </div>
@@ -95,7 +96,12 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
 
           {typeof project.heroImage === 'object' && project.heroImage && (
             <section className="project-page__hero-image">
-              <Media resource={project.heroImage} />
+              <Media
+                className="project-page__hero-media"
+                pictureClassName="project-page__media-picture"
+                imgClassName="project-page__media-image"
+                resource={project.heroImage}
+              />
               {project.heroCaption && <p className="project-page__hero-caption">{project.heroCaption}</p>}
             </section>
           )}
@@ -134,8 +140,15 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
                         }
                       >
                         {section.images.map((item) => (
-                          <div key={item.id || String(item.image)}>
-                            {typeof item.image === 'object' && item.image && <Media resource={item.image} />}
+                          <div className="project-page__section-image-item" key={item.id || String(item.image)}>
+                            {typeof item.image === 'object' && item.image && (
+                              <Media
+                                className="project-page__section-image-media"
+                                pictureClassName="project-page__media-picture"
+                                imgClassName="project-page__media-image"
+                                resource={item.image}
+                              />
+                            )}
                             {item.caption && <p className="project-page__image-caption">{item.caption}</p>}
                           </div>
                         ))}
