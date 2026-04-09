@@ -1,6 +1,8 @@
 import type { Page } from '@/payload-types'
 import RichText from '@/components/RichText'
 import { Media } from '@/components/Media'
+import { KeyboardIcon } from './KeyboardIcon'
+import { ToolCardMotion } from './ToolCardMotion.client'
 import './home-about-section.scss'
 
 type Props = {
@@ -57,7 +59,10 @@ export function HomeAboutSection({
           {toolsHeading && <h3 className="home-about__tools-heading">{toolsHeading}</h3>}
 
           <div className="home-about__tools-grid">
-            <div className="home-about__tools-column home-about__tools-column--double">
+            <ToolCardMotion
+              className="home-about__tools-column home-about__tools-column--double"
+              icon={<KeyboardIcon />}
+            >
               {toolsSubheadingOne && <h4 className="home-about__tools-subheading">{toolsSubheadingOne}</h4>}
               {toolsColumnOne?.length ? (
                 <ul className="home-about__tools-list home-about__tools-list--double">
@@ -66,9 +71,9 @@ export function HomeAboutSection({
                   ))}
                 </ul>
               ) : null}
-            </div>
+            </ToolCardMotion>
 
-            <div className="home-about__tools-column">
+            <ToolCardMotion className="home-about__tools-column">
               {toolsSubheadingTwo && <h4 className="home-about__tools-subheading">{toolsSubheadingTwo}</h4>}
               {toolsColumnTwo?.length ? (
                 <ul className="home-about__tools-list">
@@ -77,9 +82,9 @@ export function HomeAboutSection({
                   ))}
                 </ul>
               ) : null}
-            </div>
+            </ToolCardMotion>
 
-            <div className="home-about__tools-column">
+            <ToolCardMotion className="home-about__tools-column">
               {toolsSubheadingThree && <h4 className="home-about__tools-subheading">{toolsSubheadingThree}</h4>}
               {toolsColumnThree?.length ? (
                 <ul className="home-about__tools-list">
@@ -88,7 +93,7 @@ export function HomeAboutSection({
                   ))}
                 </ul>
               ) : null}
-            </div>
+            </ToolCardMotion>
           </div>
         </div>
       )}
