@@ -43,6 +43,13 @@
       box-shadow 0.25s ease;
   }
 
+  &__card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-3);
+  }
+
   &__card-title {
     margin: 0;
     font-size: clamp(1.5rem, 4vw, 2.125rem);
@@ -52,6 +59,61 @@
     color: var(--foreground);
     max-width: 36rem;
   }
+
+  &__card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    color: var(--muted-foreground);
+    filter: drop-shadow(0 0 0 rgba(34, 197, 94, 0));
+    transition:
+      color 0.22s ease,
+      filter 0.22s ease;
+
+    svg {
+      display: block;
+    }
+  }
+
+  &__badge-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3);
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding: 0.5rem 0.65rem;
+    font-size: 1.125rem;
+    line-height: 1.2;
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+    transition: color 0.22s ease, filter 0.22s ease;
+    transition-delay: 0ms;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--primary-green, #2ffd7b);
+      color: var(--background);
+      transform: scaleY(0);
+      transform-origin: bottom center;
+      transition: transform 0.28s ease;
+      transition-delay: 0ms;
+      z-index: -1;
+    }
+  }
+
+  
 
   &__card-description {
     margin: 0;
@@ -142,6 +204,49 @@
     &__card:hover {
       border-color: var(--primary-green, #2ffd7b);
       box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    &__card:hover &__badge {
+      color: var(--background);
+    }
+
+    &__card:hover &__badge::before {
+      transform: scaleY(1);
+    }
+
+    &__card:hover &__badge:nth-child(1),
+    &__card:hover &__badge:nth-child(1)::before {
+      transition-delay: 0ms;
+    }
+
+    &__card:hover &__badge:nth-child(2),
+    &__card:hover &__badge:nth-child(2)::before {
+      transition-delay: 40ms;
+    }
+
+    &__card:hover &__badge:nth-child(3),
+    &__card:hover &__badge:nth-child(3)::before {
+      transition-delay: 80ms;
+    }
+
+    &__card:hover &__badge:nth-child(4),
+    &__card:hover &__badge:nth-child(4)::before {
+      transition-delay: 120ms;
+    }
+
+    &__card:hover &__badge:nth-child(5),
+    &__card:hover &__badge:nth-child(5)::before {
+      transition-delay: 160ms;
+    }
+
+    &__card:hover &__badge:nth-child(6),
+    &__card:hover &__badge:nth-child(6)::before {
+      transition-delay: 200ms;
+    }
+
+    &__card:hover &__card-icon {
+      color: var(--primary-green, #2ffd7b);
+      filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.45));
     }
   }
 }
