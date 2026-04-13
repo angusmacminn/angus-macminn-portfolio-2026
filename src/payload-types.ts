@@ -203,28 +203,6 @@ export interface Page {
     [k: string]: unknown;
   } | null;
   aboutImage?: (string | null) | Media;
-  toolsHeading?: string | null;
-  toolsSubheadingOne?: string | null;
-  toolsSubheadingTwo?: string | null;
-  toolsSubheadingThree?: string | null;
-  toolsColumnOne?:
-    | {
-        name: string;
-        id?: string | null;
-      }[]
-    | null;
-  toolsColumnTwo?:
-    | {
-        name: string;
-        id?: string | null;
-      }[]
-    | null;
-  toolsColumnThree?:
-    | {
-        name: string;
-        id?: string | null;
-      }[]
-    | null;
   worksHeading?: string | null;
   worksIntro?: string | null;
   showFeaturedProjects?: boolean | null;
@@ -235,6 +213,12 @@ export interface Page {
     | {
         title: string;
         description?: string | null;
+        badges?:
+          | {
+              name: string;
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -937,28 +921,6 @@ export interface PagesSelect<T extends boolean = true> {
   aboutHeading?: T;
   aboutBody?: T;
   aboutImage?: T;
-  toolsHeading?: T;
-  toolsSubheadingOne?: T;
-  toolsSubheadingTwo?: T;
-  toolsSubheadingThree?: T;
-  toolsColumnOne?:
-    | T
-    | {
-        name?: T;
-        id?: T;
-      };
-  toolsColumnTwo?:
-    | T
-    | {
-        name?: T;
-        id?: T;
-      };
-  toolsColumnThree?:
-    | T
-    | {
-        name?: T;
-        id?: T;
-      };
   worksHeading?: T;
   worksIntro?: T;
   showFeaturedProjects?: T;
@@ -970,6 +932,12 @@ export interface PagesSelect<T extends boolean = true> {
     | {
         title?: T;
         description?: T;
+        badges?:
+          | T
+          | {
+              name?: T;
+              id?: T;
+            };
         id?: T;
       };
   pageHeading?: T;

@@ -6,29 +6,18 @@ type Props = {
   heading?: Page['servicesHeading']
   intro?: Page['servicesIntro']
   services?: Page['services']
-  toolsColumnOne?: Page['toolsColumnOne']
-  toolsColumnTwo?: Page['toolsColumnTwo']
-  toolsColumnThree?: Page['toolsColumnThree']
 }
 
-const getToolNames = (tools?: Page['toolsColumnOne']) =>
-  tools?.map((tool) => tool.name).filter((name): name is string => Boolean(name)) ?? []
+type ServiceBadges = NonNullable<Page['services']>[number]['badges']
 
-export function HomeServicesSection({
-  heading,
-  intro,
-  services,
-  toolsColumnOne,
-  toolsColumnTwo,
-  toolsColumnThree,
-}: Props) {
+const getBadgeNames = (badges?: ServiceBadges) =>
+  badges?.map((badge) => badge.name).filter((name): name is string => Boolean(name)) ?? []
+
+export function HomeServicesSection({ heading, intro, services }: Props) {
   if (!heading && !intro && (!services || services.length === 0)) return null
 
   const serviceCount = services?.length ?? 0
-  const bentoFour = serviceCount === 4
-  const frontEndBadges = getToolNames(toolsColumnOne)
-  const creativeBadges = getToolNames(toolsColumnTwo)
-  const cmsBadges = getToolNames(toolsColumnThree)
+  const bentoFour = serviceCount === 3
 
   return (
     <section id="services" className="home-services container section">
@@ -46,48 +35,34 @@ export function HomeServicesSection({
                 : 'home-services__bento home-services__bento--auto'
             }
           >
-            {services.map((service) => (
-              <article className="home-services__card" key={service.id || service.title}>
-                <div className="home-services__card-header">
-                  <h3 className="home-services__card-title">{service.title}</h3>
-                  {service.title && /front[\s-]?end/i.test(service.title) ? (
-                    <span className="home-services__card-icon" aria-hidden>
-                      <KeyboardIcon />
-                    </span>
+            {services.map((service) => {
+              const badgeNames = getBadgeNames(service.badges)
+
+              return (
+                <article className="home-services__card" key={service.id || service.title}>
+                  <div className="home-services__card-header">
+                    <h3 className="home-services__card-title">{service.title}</h3>
+                    {service.title && /front[\s-]?end/i.test(service.title) ? (
+                      <span className="home-services__card-icon" aria-hidden>
+                        <KeyboardIcon />
+                      </span>
+                    ) : null}
+                  </div>
+                  {badgeNames.length > 0 ? (
+                    <ul className="home-services__badge-list">
+                      {badgeNames.map((badgeName) => (
+                        <li className="home-services__badge" key={badgeName}>
+                          {badgeName}
+                        </li>
+                      ))}
+                    </ul>
                   ) : null}
-                </div>
-                {service.title && /front[\s-]?end/i.test(service.title) && frontEndBadges.length > 0 ? (
-                  <ul className="home-services__badge-list">
-                    {frontEndBadges.map((badge) => (
-                      <li className="home-services__badge home-services__badge" key={badge}>
-                        {badge}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-                {service.title && /cms/i.test(service.title) && cmsBadges.length > 0 ? (
-                  <ul className="home-services__badge-list">
-                    {cmsBadges.map((badge) => (
-                      <li className="home-services__badge" key={badge}>
-                        {badge}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-                {service.title && /creative/i.test(service.title) && creativeBadges.length > 0 ? (
-                  <ul className="home-services__badge-list">
-                    {creativeBadges.map((badge) => (
-                      <li className="home-services__badge" key={badge}>
-                        {badge}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-                {service.description && (
-                  <p className="home-services__card-description">{service.description}</p>
-                )}
-              </article>
-            ))}
+                  {service.description && (
+                    <p className="home-services__card-description">{service.description}</p>
+                  )}
+                </article>
+              )
+            })}
           </div>
         )}
       </div>

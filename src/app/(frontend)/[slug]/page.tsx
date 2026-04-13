@@ -90,9 +90,6 @@ export default async function Page({ params: paramsPromise }: Args) {
             heading={page.servicesHeading}
             intro={page.servicesIntro}
             services={page.services}
-            toolsColumnOne={page.toolsColumnOne}
-            toolsColumnTwo={page.toolsColumnTwo}
-            toolsColumnThree={page.toolsColumnThree}
           />
           <RenderBlocks blocks={layout || []} contactPanel={contactPanel} />
         </>

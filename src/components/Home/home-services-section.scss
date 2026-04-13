@@ -31,7 +31,7 @@
     flex-direction: column;
     justify-content: space-between;
     gap: var(--spacing-4);
-    padding: var(--spacing-6);
+    padding: var(--spacing-4);
     background: var(--card-gradient);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -98,7 +98,8 @@
     z-index: 0;
     transition: color 0.22s ease, filter 0.22s ease;
     transition-delay: 0ms;
-
+    border: 1px solid var(--border);
+    color: var(--muted-foreground);
     &::before {
       content: '';
       position: absolute;
@@ -119,7 +120,7 @@
     margin: 0;
     font-size: var(--subheading-small);
     line-height: 1.45;
-    color: var(--muted-foreground);
+    color: var(--foreground);
   }
 
   &__bento--auto {
@@ -147,7 +148,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1060px) {
   .home-services {
     &__intro {
       margin: 0;
@@ -181,15 +182,15 @@
       }
 
       .home-services__card:nth-child(1) {
-        grid-column: span 8;
+        grid-column: span 7;
       }
 
       .home-services__card:nth-child(2) {
-        grid-column: span 4;
+        grid-column: span 5;
       }
 
       .home-services__card:nth-child(3) {
-        grid-column: span 4;
+        grid-column: span 8;
       }
 
       .home-services__card:nth-child(4) {
