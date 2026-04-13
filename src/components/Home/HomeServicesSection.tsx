@@ -1,4 +1,8 @@
+'use client'
+
 import type { Page } from '@/payload-types'
+import { motion } from 'motion/react'
+import { CMSIcon } from './CMSIcon'
 import { KeyboardIcon } from './KeyboardIcon'
 import './home-services-section.scss'
 
@@ -37,14 +41,26 @@ export function HomeServicesSection({ heading, intro, services }: Props) {
           >
             {services.map((service) => {
               const badgeNames = getBadgeNames(service.badges)
+              const hasFrontEndIcon = Boolean(service.title && /front[\s-]?end/i.test(service.title))
+              const hasCMSIcon = Boolean(service.title && /cms/i.test(service.title))
 
               return (
-                <article className="home-services__card" key={service.id || service.title}>
+                <motion.article
+                  className="home-services__card"
+                  key={service.id || service.title}
+                  initial="rest"
+                  animate="rest"
+                  whileHover="hover"
+                >
                   <div className="home-services__card-header">
                     <h3 className="home-services__card-title">{service.title}</h3>
-                    {service.title && /front[\s-]?end/i.test(service.title) ? (
+                    {hasFrontEndIcon ? (
                       <span className="home-services__card-icon" aria-hidden>
                         <KeyboardIcon />
+                      </span>
+                    ) : hasCMSIcon ? (
+                      <span className="home-services__card-icon" aria-hidden>
+                        <CMSIcon />
                       </span>
                     ) : null}
                   </div>
@@ -60,7 +76,7 @@ export function HomeServicesSection({ heading, intro, services }: Props) {
                   {service.description && (
                     <p className="home-services__card-description">{service.description}</p>
                   )}
-                </article>
+                </motion.article>
               )
             })}
           </div>

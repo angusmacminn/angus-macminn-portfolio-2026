@@ -12,7 +12,13 @@ const pseudoRandom = (seed: number) => {
 }
 
 const keyVariants = {
-  rest: { y: 0 },
+  rest: {
+    y: 0,
+    transition: {
+      duration: 0.18,
+      ease: 'easeOut' as const,
+    },
+  },
   hover: (i: number) => ({
     y: [0, -(1 + pseudoRandom(i + 1) * 1.25), 0],
     transition: {
@@ -35,7 +41,12 @@ export function KeyboardIcon() {
   const reduce = useReducedMotion()
 
   return (
-    <motion.svg width="40" height="30" viewBox="0 0 40 30" aria-hidden>
+    <motion.svg
+      width="40"
+      height="30"
+      viewBox="0 0 40 30"
+      aria-hidden
+    >
       {/* keyboard frame */}
       <rect x="1.5" y="2.5" width="37" height="25" rx="4" stroke="currentColor" strokeWidth="1.5" fill="none" />
 
