@@ -1,5 +1,9 @@
+'use client'
+
 import type { Page, Project } from '@/payload-types'
 import Link from 'next/link'
+import { useCallback, useEffect, useState } from 'react'
+import useEmblaCarousel from 'embla-carousel-react'
 
 import { Media } from '@/components/Media'
 import './home-works-section.scss'
@@ -49,6 +53,33 @@ function CardTags({
 }
 
 export function HomeWorksSection({ heading, intro, projects }: Props) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start' })
+  const [canScrollPrev, setCanScrollPrev] = useState(false)
+  const [canScrollNext, setCanScrollNext] = useState(false)
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return
+
+    setCanScrollPrev(emblaApi.canScrollPrev())
+    setCanScrollNext(emblaApi.canScrollNext())
+  }, [emblaApi])
+
+  useEffect(() => {
+    if (!emblaApi) return
+
+    onSelect()
+    emblaApi.on('select', onSelect)
+    emblaApi.on('reInit', onSelect)
+
+    return () => {
+      emblaApi.off('select', onSelect)
+      emblaApi.off('reInit', onSelect)
+    }
+  }, [emblaApi, onSelect])
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
+
   if (!heading && !intro && projects.length === 0) return null
 
   return (
@@ -56,57 +87,84 @@ export function HomeWorksSection({ heading, intro, projects }: Props) {
       {heading && <h2 className="home-works__heading">{heading}</h2>}
       {intro && <p className="home-works__intro">{intro}</p>}
 
-      <div className="home-works__grid">
-        {projects.map((project) => {
-          const slug = project.slug
-          const description = project.cardDescription ?? project.subtitle
-          const thumbnail =
-            typeof project.cardThumbnail === 'object' && project.cardThumbnail != null
-              ? project.cardThumbnail
-              : null
-          const tags = project.cardTags?.length ? project.cardTags : null
+      <div className="home-works__carousel">
+        <div className="home-works__viewport" ref={emblaRef}>
+          <div className="home-works__container">
+            {projects.map((project) => {
+              const slug = project.slug
+              const description = project.cardDescription ?? project.subtitle
+              const thumbnail =
+                typeof project.cardThumbnail === 'object' && project.cardThumbnail != null
+                  ? project.cardThumbnail
+                  : null
+              const tags = project.cardTags?.length ? project.cardTags : null
 
-          const cardBody = (
-            <>
-              <div className="home-works__card-header">
-                <h3 className="home-works__card-title">{project.title}</h3>
-                <CardArrowIcon />
-              </div>
-              
-              {thumbnail ? (
-                <div className="home-works__card-image">
-                  <Media
-                    resource={thumbnail}
-                    imgClassName="home-works__card-img"
-                    size="(max-width: 768px) 100vw, 50vw"
-                  />
-                  {tags && <CardTags projectId={project.id} tags={tags} variant="overlay" />}
-                </div>
-              ) : (
-                tags && <CardTags projectId={project.id} tags={tags} variant="inline" />
-              )}
+              const cardBody = (
+                <>
+                  <div className="home-works__card-header">
+                    <h3 className="home-works__card-title">{project.title}</h3>
+                    <CardArrowIcon />
+                  </div>
 
-              <div className="home-works__card-content">
-                {description && <p className="home-works__card-subtitle">{description}</p>}
-                {project.cardResponsibilities && (
-                  <p className="home-works__card-responsibilities">{project.cardResponsibilities}</p>
-                )}
-              </div>
-            </>
-          )
+                  {thumbnail ? (
+                    <div className="home-works__card-image">
+                      <Media
+                        resource={thumbnail}
+                        imgClassName="home-works__card-img"
+                        size="(max-width: 768px) 100vw, 50vw"
+                      />
+                      {tags && <CardTags projectId={project.id} tags={tags} variant="overlay" />}
+                    </div>
+                  ) : (
+                    tags && <CardTags projectId={project.id} tags={tags} variant="inline" />
+                  )}
 
-          return (
-            <article className="home-works__card" key={project.id}>
-              {slug ? (
-                <Link className="home-works__card-link" href={`/projects/${slug}`}>
-                  {cardBody}
-                </Link>
-              ) : (
-                <div className="home-works__card-link home-works__card-link--static">{cardBody}</div>
-              )}
-            </article>
-          )
-        })}
+                  <div className="home-works__card-content">
+                    {description && <p className="home-works__card-subtitle">{description}</p>}
+                    {project.cardResponsibilities && (
+                      <p className="home-works__card-responsibilities">{project.cardResponsibilities}</p>
+                    )}
+                  </div>
+                </>
+              )
+
+              return (
+                <article className="home-works__slide home-works__card" key={project.id}>
+                  {slug ? (
+                    <Link className="home-works__card-link" href={`/projects/${slug}`}>
+                      {cardBody}
+                    </Link>
+                  ) : (
+                    <div className="home-works__card-link home-works__card-link--static">{cardBody}</div>
+                  )}
+                </article>
+              )
+            })}
+          </div>
+        </div>
+
+        {projects.length > 1 && (
+          <div className="home-works__controls" aria-label="Work carousel controls">
+            <button
+              type="button"
+              className="home-works__control"
+              onClick={scrollPrev}
+              disabled={!canScrollPrev}
+              aria-label="Previous project"
+            >
+              Prev
+            </button>
+            <button
+              type="button"
+              className="home-works__control"
+              onClick={scrollNext}
+              disabled={!canScrollNext}
+              aria-label="Next project"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </section>
   )
