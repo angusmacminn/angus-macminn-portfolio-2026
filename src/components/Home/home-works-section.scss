@@ -212,7 +212,7 @@
 
   &__control {
     border: 1px solid var(--border);
-    border-radius: 999px;
+    // border-radius: 999px;
     background: var(--background);
     color: var(--foreground);
     padding: 0.4rem 0.85rem;
@@ -226,6 +226,9 @@
     &:disabled {
       opacity: 0.4;
       cursor: not-allowed;
+    }
+    &:hover {
+      border-color: var(--primary-green);
     }
   }
 }
