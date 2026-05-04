@@ -97,6 +97,7 @@ export function HomeWorksSection({ heading, intro, projects }: Props) {
                 typeof project.cardThumbnail === 'object' && project.cardThumbnail != null
                   ? project.cardThumbnail
                   : null
+              const cardThumbSrc = thumbnail?.sizes?.card?.url ?? undefined
               const tags = project.cardTags?.length ? project.cardTags : null
 
               const cardBody = (
@@ -110,6 +111,7 @@ export function HomeWorksSection({ heading, intro, projects }: Props) {
                     <div className="home-works__card-image">
                       <Media
                         resource={thumbnail}
+                        src={cardThumbSrc}
                         imgClassName="home-works__card-img"
                         size="(max-width: 768px) 100vw, 50vw"
                       />

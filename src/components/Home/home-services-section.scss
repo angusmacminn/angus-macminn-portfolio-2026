@@ -98,8 +98,8 @@
     z-index: 0;
     transition: color 0.22s ease, filter 0.22s ease;
     transition-delay: 0ms;
-    border: 1px solid var(--border);
-    color: var(--muted-foreground);
+    border: 1px solid var(--primary-green);
+    color: var(--primary-green);
     &::before {
       content: '';
       position: absolute;

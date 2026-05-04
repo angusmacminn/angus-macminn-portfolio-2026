@@ -130,6 +130,7 @@
     margin: 0 0 0.75rem;
     overflow: hidden;
     border-radius: calc(var(--radius) - 4px);
+    aspect-ratio: 16 / 10;
   }
 
   &__card-tags {
@@ -181,7 +182,9 @@
   &__card-img {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
 
   &__card-meta {
