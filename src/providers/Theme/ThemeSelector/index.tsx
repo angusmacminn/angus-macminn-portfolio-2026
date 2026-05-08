@@ -28,17 +28,22 @@ const DarkModeIcon = () => (
 )
 
 export const ThemeSelector: React.FC<{ className?: string }> = ({ className }) => {
-  const { setTheme } = useTheme()
+  const { setTheme, theme } = useTheme()
   const [value, setValue] = useState<Theme | 'auto'>('auto')
   const [resolvedTheme, setResolvedTheme] = useState<Theme>('light')
+
+  const getSystemTheme = (): Theme =>
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 
   const onThemeChange = (themeToSet: Theme | 'auto') => {
     if (themeToSet === 'auto') {
       setTheme(null)
       setValue('auto')
+      setResolvedTheme(getSystemTheme())
     } else {
       setTheme(themeToSet)
       setValue(themeToSet)
+      setResolvedTheme(themeToSet)
     }
   }
 
@@ -48,14 +53,16 @@ export const ThemeSelector: React.FC<{ className?: string }> = ({ className }) =
   }, [])
 
   React.useEffect(() => {
-    const updateResolvedTheme = () => {
-      const htmlTheme = document.documentElement.getAttribute('data-theme')
-      if (htmlTheme === 'light' || htmlTheme === 'dark') {
-        setResolvedTheme(htmlTheme)
-        return
-      }
+    if (theme === 'light' || theme === 'dark') {
+      setResolvedTheme(theme)
+    }
+  }, [theme])
 
-      setResolvedTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+  React.useEffect(() => {
+    if (value !== 'auto') return
+
+    const updateResolvedTheme = () => {
+      setResolvedTheme(getSystemTheme())
     }
 
     updateResolvedTheme()
