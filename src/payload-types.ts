@@ -251,7 +251,7 @@ export interface Project {
   title: string;
   subtitle?: string | null;
   overview?: string | null;
-  heroImage: string | Media;
+  heroMedia: string | Media;
   heroCaption?: string | null;
   projectURL?: string | null;
   repoURL?: string | null;
@@ -314,10 +314,21 @@ export interface Project {
           [k: string]: unknown;
         } | null;
         layout?: ('single' | 'two-up' | 'full-bleed') | null;
-        images?:
+        mediaItems?:
           | {
-              image: string | Media;
+              media: string | Media;
               caption?: string | null;
+              /**
+               * Automatically play video when possible.
+               */
+              autoplay?: boolean | null;
+              loop?: boolean | null;
+              /**
+               * Most browsers require muted videos for autoplay.
+               */
+              muted?: boolean | null;
+              controls?: boolean | null;
+              playsInline?: boolean | null;
               id?: string | null;
             }[]
           | null;
@@ -1032,7 +1043,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
   subtitle?: T;
   overview?: T;
-  heroImage?: T;
+  heroMedia?: T;
   heroCaption?: T;
   projectURL?: T;
   repoURL?: T;
@@ -1065,11 +1076,16 @@ export interface ProjectsSelect<T extends boolean = true> {
         subheading?: T;
         body?: T;
         layout?: T;
-        images?:
+        mediaItems?:
           | T
           | {
-              image?: T;
+              media?: T;
               caption?: T;
+              autoplay?: T;
+              loop?: T;
+              muted?: T;
+              controls?: T;
+              playsInline?: T;
               id?: T;
             };
         id?: T;

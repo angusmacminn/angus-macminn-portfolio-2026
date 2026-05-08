@@ -30,17 +30,23 @@ export default async function ProjectsPage() {
       </p>
 
       <div className="projects-page__grid">
-        {projects.docs.map((project) => (
-          <article className="projects-page__card" key={project.id}>
+        {projects.docs.map((project) => {
+          const projectWithLegacyHero = project as typeof project & {
+            heroImage?: typeof project.heroMedia
+          }
+          const heroMedia = project.heroMedia ?? projectWithLegacyHero.heroImage
+
+          return (
+            <article className="projects-page__card" key={project.id}>
             <Link className="projects-page__card-link" href={`/projects/${project.slug}`}>
               <h2 className="projects-page__card-title">{project.title}</h2>
             </Link>
 
             {project.subtitle && <p className="projects-page__card-subtitle">{project.subtitle}</p>}
 
-            {typeof project.heroImage === 'object' && project.heroImage && (
+            {typeof heroMedia === 'object' && heroMedia && (
               <div className="projects-page__card-image">
-                <Media resource={project.heroImage} />
+                <Media resource={heroMedia} />
               </div>
             )}
 
@@ -52,8 +58,9 @@ export default async function ProjectsPage() {
                 </Link>
               )}
             </div>
-          </article>
-        ))}
+            </article>
+          )
+        })}
       </div>
     </article>
   )

@@ -4,6 +4,7 @@ import { CMSLink } from '@/components/Link'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
+import type { Media as MediaType } from '@/payload-types'
 import configPromise from '@payload-config'
 import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
 import { draftMode } from 'next/headers'
@@ -15,6 +16,27 @@ type Args = {
   params: Promise<{
     slug: string
   }>
+}
+
+type LegacySectionMediaItem = {
+  id?: string | null
+  image?: MediaType | string | number | null
+  caption?: string | null
+}
+
+type SectionMediaItem = {
+  id?: string | null
+  media?: MediaType | string | number | null
+  caption?: string | null
+  autoplay?: boolean | null
+  loop?: boolean | null
+  muted?: boolean | null
+  controls?: boolean | null
+  playsInline?: boolean | null
+}
+
+type ProjectWithLegacyHero = RequiredDataFromCollectionSlug<'projects'> & {
+  heroImage?: MediaType | string | number | null
 }
 
 export async function generateStaticParams() {
@@ -41,6 +63,9 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
   if (!project) {
     return <PayloadRedirects url={`/projects/${decodedSlug}`} />
   }
+
+  const projectWithLegacyHero = project as ProjectWithLegacyHero
+  const heroMedia = project.heroMedia ?? projectWithLegacyHero.heroImage
 
   const sections = project.sections ?? []
   const menuItems =
@@ -94,13 +119,14 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
             </div>
           </header>
 
-          {typeof project.heroImage === 'object' && project.heroImage && (
+          {typeof heroMedia === 'object' && heroMedia && (
             <section className="project-page__hero-image">
               <Media
                 className="project-page__hero-media"
                 pictureClassName="project-page__media-picture"
                 imgClassName="project-page__media-image"
-                resource={project.heroImage}
+                videoClassName="project-page__media-video"
+                resource={heroMedia}
               />
               {project.heroCaption && <p className="project-page__hero-caption">{project.heroCaption}</p>}
             </section>
@@ -122,6 +148,23 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
             <section className="project-page__sections">
               {sections.map((section, index) => {
                 const id = `project-section-${index}`
+                const legacySection = section as typeof section & {
+                  images?: LegacySectionMediaItem[] | null
+                }
+                const mediaItems: SectionMediaItem[] =
+                  (section.mediaItems as SectionMediaItem[] | null | undefined) ??
+                  legacySection.images?.map((item): SectionMediaItem => ({
+                    id: item.id,
+                    media: item.image,
+                    caption: item.caption,
+                    autoplay: true,
+                    loop: true,
+                    muted: true,
+                    controls: false,
+                    playsInline: true,
+                  })) ??
+                  []
+
                 return (
                   <article className="project-page__section" key={section.id || section.heading} id={id}>
                     {section.kicker && <p className="project-page__section-kicker">{section.kicker}</p>}
@@ -131,22 +174,28 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
                     )}
                     {section.body && <RichText className="project-page__section-body" data={section.body} />}
 
-                    {section.images && section.images.length > 0 && (
+                    {mediaItems.length > 0 && (
                       <div
                         className={
                           section.layout === 'two-up'
-                            ? 'project-page__section-images project-page__section-images--two-up'
-                            : 'project-page__section-images'
+                            ? 'project-page__section-media project-page__section-media--two-up'
+                            : 'project-page__section-media'
                         }
                       >
-                        {section.images.map((item) => (
-                          <div className="project-page__section-image-item" key={item.id || String(item.image)}>
-                            {typeof item.image === 'object' && item.image && (
+                        {mediaItems.map((item) => (
+                          <div className="project-page__section-media-item" key={item.id || String(item.media)}>
+                            {typeof item.media === 'object' && item.media && (
                               <Media
-                                className="project-page__section-image-media"
+                                className="project-page__section-media-wrapper"
                                 pictureClassName="project-page__media-picture"
                                 imgClassName="project-page__media-image"
-                                resource={item.image}
+                                videoClassName="project-page__media-video"
+                                resource={item.media}
+                                videoAutoPlay={item.autoplay ?? true}
+                                videoLoop={item.loop ?? true}
+                                videoMuted={item.muted ?? true}
+                                videoControls={item.controls ?? false}
+                                videoPlaysInline={item.playsInline ?? true}
                               />
                             )}
                             {item.caption && <p className="project-page__image-caption">{item.caption}</p>}

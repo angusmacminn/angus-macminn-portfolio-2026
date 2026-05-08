@@ -176,7 +176,7 @@
   }
 
   &__hero-media,
-  &__section-image-media {
+  &__section-media-wrapper {
     width: 100%;
   }
 
@@ -186,6 +186,13 @@
   }
 
   &__media-image {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+
+  &__media-video {
     display: block;
     width: 100%;
     max-width: 100%;
@@ -254,7 +261,7 @@
     margin-top: 0;
   }
 
-  &__section-images {
+  &__section-media {
     margin-top: 0;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -282,7 +289,7 @@
       font-size: 1.125rem;
     }
 
-    &__section-images--two-up {
+    &__section-media--two-up {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }

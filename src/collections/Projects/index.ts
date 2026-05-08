@@ -30,7 +30,7 @@ export const Projects: CollectionConfig<'projects'> = {
     role: true,
     year: true,
     featured: true,
-    heroImage: true,
+    heroMedia: true,
     cardDescription: true,
     cardThumbnail: true,
     cardResponsibilities: true,
@@ -57,10 +57,11 @@ export const Projects: CollectionConfig<'projects'> = {
               type: 'textarea',
             },
             {
-              name: 'heroImage',
+              name: 'heroMedia',
               type: 'upload',
               relationTo: 'media',
               required: true,
+              label: 'Hero media',
             },
             {
               name: 'heroCaption',
@@ -221,12 +222,13 @@ export const Projects: CollectionConfig<'projects'> = {
                   ],
                 },
                 {
-                  name: 'images',
+                  name: 'mediaItems',
                   type: 'array',
+                  label: 'Section media',
                   maxRows: 2,
                   fields: [
                     {
-                      name: 'image',
+                      name: 'media',
                       type: 'upload',
                       relationTo: 'media',
                       required: true,
@@ -234,6 +236,38 @@ export const Projects: CollectionConfig<'projects'> = {
                     {
                       name: 'caption',
                       type: 'text',
+                    },
+                    {
+                      name: 'autoplay',
+                      type: 'checkbox',
+                      defaultValue: true,
+                      admin: {
+                        description: 'Automatically play video when possible.',
+                      },
+                    },
+                    {
+                      name: 'loop',
+                      type: 'checkbox',
+                      defaultValue: true,
+                    },
+                    {
+                      name: 'muted',
+                      type: 'checkbox',
+                      defaultValue: true,
+                      admin: {
+                        description: 'Most browsers require muted videos for autoplay.',
+                      },
+                    },
+                    {
+                      name: 'controls',
+                      type: 'checkbox',
+                      defaultValue: false,
+                    },
+                    {
+                      name: 'playsInline',
+                      type: 'checkbox',
+                      defaultValue: true,
+                      label: 'Plays inline',
                     },
                   ],
                 },

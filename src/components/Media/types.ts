@@ -19,4 +19,9 @@ export interface Props {
   size?: string // for NextImage only
   src?: StaticImageData | string // for static media or generated payload size URLs
   videoClassName?: string
+  videoAutoPlay?: boolean
+  videoLoop?: boolean
+  videoMuted?: boolean
+  videoControls?: boolean
+  videoPlaysInline?: boolean
 }
