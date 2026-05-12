@@ -182,25 +182,46 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
                             : 'project-page__section-media'
                         }
                       >
-                        {mediaItems.map((item) => (
-                          <div className="project-page__section-media-item" key={item.id || String(item.media)}>
-                            {typeof item.media === 'object' && item.media && (
-                              <Media
-                                className="project-page__section-media-wrapper"
-                                pictureClassName="project-page__media-picture"
-                                imgClassName="project-page__media-image"
-                                videoClassName="project-page__media-video"
-                                resource={item.media}
-                                videoAutoPlay={item.autoplay ?? true}
-                                videoLoop={item.loop ?? true}
-                                videoMuted={item.muted ?? true}
-                                videoControls={item.controls ?? false}
-                                videoPlaysInline={item.playsInline ?? true}
-                              />
-                            )}
-                            {item.caption && <p className="project-page__image-caption">{item.caption}</p>}
-                          </div>
-                        ))}
+                        {mediaItems.map((item) => {
+                          const mediaResource = typeof item.media === 'object' && item.media ? item.media : null
+                          const mediaWidth =
+                            typeof mediaResource?.width === 'number' ? mediaResource.width : null
+                          const mediaHeight =
+                            typeof mediaResource?.height === 'number' ? mediaResource.height : null
+                          const hasAspectRatio =
+                            mediaWidth !== null &&
+                            mediaHeight !== null &&
+                            mediaWidth > 0 &&
+                            mediaHeight > 0
+                          const isPortraitMedia = hasAspectRatio && mediaHeight > mediaWidth
+
+                          return (
+                            <div
+                              className={
+                                isPortraitMedia
+                                  ? 'project-page__section-media-item project-page__section-media-item--portrait'
+                                  : 'project-page__section-media-item'
+                              }
+                              key={item.id || String(item.media)}
+                            >
+                              {mediaResource && (
+                                <Media
+                                  className="project-page__section-media-wrapper"
+                                  pictureClassName="project-page__media-picture"
+                                  imgClassName="project-page__media-image"
+                                  videoClassName="project-page__media-video"
+                                  resource={mediaResource}
+                                  videoAutoPlay={item.autoplay ?? true}
+                                  videoLoop={item.loop ?? true}
+                                  videoMuted={item.muted ?? true}
+                                  videoControls={item.controls ?? false}
+                                  videoPlaysInline={item.playsInline ?? true}
+                                />
+                              )}
+                              {item.caption && <p className="project-page__image-caption">{item.caption}</p>}
+                            </div>
+                          )
+                        })}
                       </div>
                     )}
                   </article>

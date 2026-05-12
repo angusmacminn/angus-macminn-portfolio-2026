@@ -19,7 +19,7 @@ export default async function ProjectsPage() {
     limit: 100,
     overrideAccess: draft,
     pagination: false,
-    sort: '-year',
+    sort: 'sortOrder,-year',
   })
 
   return (

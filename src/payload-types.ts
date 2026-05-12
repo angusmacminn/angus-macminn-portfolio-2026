@@ -335,6 +335,10 @@ export interface Project {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Manual ordering for project lists. Lower numbers appear first.
+   */
+  sortOrder?: number | null;
   publishedAt?: string | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
@@ -1090,6 +1094,7 @@ export interface ProjectsSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  sortOrder?: T;
   publishedAt?: T;
   generateSlug?: T;
   slug?: T;

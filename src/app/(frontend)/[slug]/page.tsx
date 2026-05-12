@@ -150,17 +150,14 @@ async function queryHomeProjects(
       limit: relatedProjectIDs.length,
       overrideAccess: draft,
       pagination: false,
+      sort: 'sortOrder,-year',
       where: {
         id: {
           in: relatedProjectIDs,
         },
       },
     })
-
-    const docsById = new Map(result.docs.map((doc) => [doc.id, doc]))
-    return relatedProjectIDs
-      .map((id) => docsById.get(id))
-      .filter((project): project is Project => Boolean(project))
+    return result.docs
   }
 
   if (!page.showFeaturedProjects) {
@@ -174,7 +171,7 @@ async function queryHomeProjects(
     limit: 6,
     overrideAccess: draft,
     pagination: false,
-    sort: '-year',
+    sort: 'sortOrder,-year',
     where: {
       featured: {
         equals: true,

@@ -21,7 +21,7 @@ export const Projects: CollectionConfig<'projects'> = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'year', 'featured', 'updatedAt'],
+    defaultColumns: ['title', 'sortOrder', 'year', 'featured', 'updatedAt'],
   },
   defaultPopulate: {
     title: true,
@@ -29,6 +29,7 @@ export const Projects: CollectionConfig<'projects'> = {
     subtitle: true,
     role: true,
     year: true,
+    sortOrder: true,
     featured: true,
     heroMedia: true,
     cardDescription: true,
@@ -276,6 +277,15 @@ export const Projects: CollectionConfig<'projects'> = {
           ],
         },
       ],
+    },
+    {
+      name: 'sortOrder',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        description: 'Manual ordering for project lists. Lower numbers appear first.',
+      },
     },
     {
       name: 'publishedAt',

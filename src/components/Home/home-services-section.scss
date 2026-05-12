@@ -98,17 +98,15 @@
     z-index: 0;
     transition: color 0.22s ease, filter 0.22s ease;
     transition-delay: 0ms;
-    border: 1px solid var(--primary-green);
-    color: var(--primary-green);
+    color: var(--foreground);
     &::before {
       content: '';
       position: absolute;
       inset: 0;
       background: var(--primary-green, #2ffd7b);
-      color: var(--background);
-      transform: scaleY(0);
-      transform-origin: bottom center;
-      transition: transform 0.28s ease;
+      // Start as a 3px underline, then grow into a full fill on hover.
+      clip-path: inset(calc(100% - 3px) 0 0 0);
+      transition: clip-path 0.28s ease;
       transition-delay: 0ms;
       z-index: -1;
     }
@@ -212,7 +210,7 @@
     }
 
     &__card:hover &__badge::before {
-      transform: scaleY(1);
+      clip-path: inset(0 0 0 0);
     }
 
     &__card:hover &__badge:nth-child(1),

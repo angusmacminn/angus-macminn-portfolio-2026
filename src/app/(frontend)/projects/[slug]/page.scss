@@ -271,6 +271,15 @@
       min-width: 0;
     }
   }
+
+  &__section-media-item {
+    min-width: 0;
+  }
+
+  &__section-media-item--portrait {
+    justify-self: center;
+    width: min(100%, 22rem);
+  }
 }
 
 @media (min-width: 768px) {
