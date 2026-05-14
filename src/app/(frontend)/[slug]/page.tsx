@@ -9,6 +9,7 @@ import React, { cache } from 'react'
 
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { generateMeta } from '@/utilities/generateMeta'
+import { sortProjects } from '@/utilities/sortProjects'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { HomeAboutSection, HomeHeroSection, HomeServicesSection, HomeWorksSection } from '@/components/Home'
@@ -150,14 +151,13 @@ async function queryHomeProjects(
       limit: relatedProjectIDs.length,
       overrideAccess: draft,
       pagination: false,
-      sort: 'sortOrder,-year',
       where: {
         id: {
           in: relatedProjectIDs,
         },
       },
     })
-    return result.docs
+    return sortProjects(result.docs)
   }
 
   if (!page.showFeaturedProjects) {
@@ -171,7 +171,6 @@ async function queryHomeProjects(
     limit: 6,
     overrideAccess: draft,
     pagination: false,
-    sort: 'sortOrder,-year',
     where: {
       featured: {
         equals: true,
@@ -179,5 +178,5 @@ async function queryHomeProjects(
     },
   })
 
-  return featuredResult.docs
+  return sortProjects(featuredResult.docs)
 }

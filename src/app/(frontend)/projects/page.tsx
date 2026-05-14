@@ -6,6 +6,7 @@ import { draftMode } from 'next/headers'
 import Link from 'next/link'
 
 import { Media } from '@/components/Media'
+import { sortProjects } from '@/utilities/sortProjects'
 import './page.scss'
 
 export default async function ProjectsPage() {
@@ -19,8 +20,8 @@ export default async function ProjectsPage() {
     limit: 100,
     overrideAccess: draft,
     pagination: false,
-    sort: 'sortOrder,-year',
   })
+  const sortedProjects = sortProjects(projects.docs)
 
   return (
     <article className="projects-page container">
@@ -30,7 +31,7 @@ export default async function ProjectsPage() {
       </p>
 
       <div className="projects-page__grid">
-        {projects.docs.map((project) => {
+        {sortedProjects.map((project) => {
           const projectWithLegacyHero = project as typeof project & {
             heroImage?: typeof project.heroMedia
           }

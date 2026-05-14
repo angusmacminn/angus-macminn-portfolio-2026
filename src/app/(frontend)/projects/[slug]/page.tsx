@@ -6,6 +6,7 @@ import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
 import type { Media as MediaType } from '@/payload-types'
 import configPromise from '@payload-config'
+import Link from 'next/link'
 import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
 import { draftMode } from 'next/headers'
 import { cache } from 'react'
@@ -101,6 +102,9 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
 
         <div className="project-page__content">
           <header className="project-page__header">
+            <Link href="/projects" className="project-page__back-link">
+              Back to works
+            </Link>
             <h1 className="project-page__title">{project.title}</h1>
             {project.subtitle && <p className="project-page__subtitle">{project.subtitle}</p>}
 
