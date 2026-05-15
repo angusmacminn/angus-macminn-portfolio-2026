@@ -98,11 +98,18 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
           showSidebar ? 'project-page__layout' : 'project-page__layout project-page__layout--single'
         }
       >
-        {showSidebar && <ProjectKickerSidebar items={menuItems} meta={sidebarMeta} />}
+        {showSidebar && <ProjectKickerSidebar items={menuItems} meta={sidebarMeta} showBackLink />}
 
         <div className="project-page__content">
           <header className="project-page__header">
-            <Link href="/projects" className="project-page__back-link">
+            <Link
+              href="/#work"
+              className={
+                showSidebar
+                  ? 'project-page__back-link project-page__back-link--header project-page__back-link--mobile-only'
+                  : 'project-page__back-link project-page__back-link--header'
+              }
+            >
               Back to works
             </Link>
             <h1 className="project-page__title">{project.title}</h1>

@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
+import Link from 'next/link'
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { cn } from '@/utilities/ui'
@@ -30,9 +31,11 @@ function hasMeta(meta?: ProjectSidebarMeta) {
 export function ProjectKickerSidebar({
   items,
   meta,
+  showBackLink = false,
 }: {
   items: MenuItem[]
   meta?: ProjectSidebarMeta
+  showBackLink?: boolean
 }) {
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? '')
   const [indicator, setIndicator] = useState({ top: 0, height: DOT_SIZE })
@@ -180,6 +183,12 @@ export function ProjectKickerSidebar({
 
   return (
     <aside className="project-page__sidebar" aria-label="Project section menu">
+      {showBackLink && (
+        <Link href="/#work" className="project-page__back-link project-page__back-link--sidebar">
+          Back to works
+        </Link>
+      )}
+
       {showNav && (
         <nav ref={navRef} className="project-page__menu-list" aria-label="On this page">
           <motion.div

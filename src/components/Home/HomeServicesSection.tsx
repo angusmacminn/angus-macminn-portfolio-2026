@@ -2,6 +2,7 @@
 
 import type { Page } from '@/payload-types'
 import { motion } from 'motion/react'
+import { BezierIcon } from './BezierIcon'
 import { CMSIcon } from './CMSIcon'
 import { KeyboardIcon } from './KeyboardIcon'
 import './home-services-section.scss'
@@ -43,6 +44,9 @@ export function HomeServicesSection({ heading, intro, services }: Props) {
               const badgeNames = getBadgeNames(service.badges)
               const hasFrontEndIcon = Boolean(service.title && /front[\s-]?end/i.test(service.title))
               const hasCMSIcon = Boolean(service.title && /cms/i.test(service.title))
+              const hasCreativeDevIcon = Boolean(
+                service.title && /creative\s*development|creative\s*dev/i.test(service.title),
+              )
 
               return (
                 <motion.article
@@ -61,6 +65,10 @@ export function HomeServicesSection({ heading, intro, services }: Props) {
                     ) : hasCMSIcon ? (
                       <span className="home-services__card-icon" aria-hidden>
                         <CMSIcon />
+                      </span>
+                    ) : hasCreativeDevIcon ? (
+                      <span className="home-services__card-icon" aria-hidden>
+                        <BezierIcon />
                       </span>
                     ) : null}
                   </div>

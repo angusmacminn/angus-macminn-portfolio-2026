@@ -150,6 +150,10 @@
     }
   }
 
+  &__back-link--sidebar {
+    margin-bottom: 0.25rem;
+  }
+
   &__title {
     margin: 0;
     font-size: 2.5rem;
@@ -321,6 +325,10 @@
 
 @media (min-width: 768px) {
   .project-page {
+    &__back-link--mobile-only {
+      display: none;
+    }
+
     &__layout {
       gap: var(--spacing-12);
     }
@@ -350,6 +358,10 @@
 
     &__sidebar {
       display: none;
+    }
+
+    &__back-link--mobile-only {
+      display: inline-flex;
     }
   }
 }

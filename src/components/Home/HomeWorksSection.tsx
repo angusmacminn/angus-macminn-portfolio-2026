@@ -109,8 +109,11 @@ export function HomeWorksSection({ heading, intro, projects }: Props) {
                   {thumbnail ? (
                     <div className="home-works__card-image">
                       <Media
+                        htmlElement={null}
                         resource={thumbnail}
+                        pictureClassName="home-works__card-picture"
                         imgClassName="home-works__card-img"
+                        videoClassName="home-works__card-img"
                         size="(max-width: 768px) 100vw, 50vw"
                       />
                       {tags && <CardTags projectId={project.id} tags={tags} variant="overlay" />}
