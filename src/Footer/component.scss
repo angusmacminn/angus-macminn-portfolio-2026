@@ -75,7 +75,6 @@
     justify-content: center;
     width: 32px;
     height: 34px;
-    margin-left: auto;
     border-radius: 10px;
     border: 1px solid var(--border);
     background: color-mix(in oklab, var(--muted) 70%, var(--background));
@@ -103,6 +102,14 @@
     background: currentColor;
     -webkit-mask: url('/icons/copy-icon.svg') center / contain no-repeat;
     mask: url('/icons/copy-icon.svg') center / contain no-repeat;
+  }
+
+  &__check-icon {
+    width: 20px;
+    height: 20px;
+    background: currentColor;
+    -webkit-mask: url('/icons/check-icon.svg') center / contain no-repeat;
+    mask: url('/icons/check-icon.svg') center / contain no-repeat;
   }
 
   &__book-call {

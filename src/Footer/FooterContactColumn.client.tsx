@@ -11,6 +11,8 @@ type SocialLink = NonNullable<ContactPanel['socialLinks']>[number]
 
 const TOAST_MS = 2800
 const TOAST_DURATION = 0.16
+const ICON_DURATION = 0.14
+const EASE_OUT = [0.23, 1, 0.32, 1] as const
 
 const SocialIcon: React.FC<{ platform: NonNullable<SocialLink['platform']> }> = ({ platform }) => {
   const common = {
@@ -133,17 +135,41 @@ export function FooterContactColumn({
 
       {email ? (
         <div className="site-footer__contact-row">
-          <a className="site-footer__contact-email" href={`mailto:${email}`}>
-            {email}
-          </a>
-          <button
+
+<button
             type="button"
             className="site-footer__copy"
             onClick={copyEmail}
             aria-label="Copy email address"
           >
-            <span className="site-footer__copy-icon" aria-hidden />
+            <AnimatePresence mode="wait" initial={false}>
+              {copied ? (
+                <motion.span
+                  key="check"
+                  className="site-footer__check-icon"
+                  aria-hidden
+                  initial={{ opacity: 0, transform: 'scale(0.92)' }}
+                  animate={{ opacity: 1, transform: 'scale(1)' }}
+                  exit={{ opacity: 0, transform: 'scale(0.92)' }}
+                  transition={{ duration: ICON_DURATION, ease: EASE_OUT }}
+                />
+              ) : (
+                <motion.span
+                  key="copy"
+                  className="site-footer__copy-icon"
+                  aria-hidden
+                  initial={{ opacity: 0, transform: 'scale(0.92)' }}
+                  animate={{ opacity: 1, transform: 'scale(1)' }}
+                  exit={{ opacity: 0, transform: 'scale(0.92)' }}
+                  transition={{ duration: ICON_DURATION, ease: EASE_OUT }}
+                />
+              )}
+            </AnimatePresence>
           </button>
+          <a className="site-footer__contact-email" href={`mailto:${email}`}>
+            {email}
+          </a>
+          
         </div>
       ) : null}
 

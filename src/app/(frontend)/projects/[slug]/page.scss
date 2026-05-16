@@ -219,6 +219,7 @@
   &__hero-media,
   &__section-media-wrapper {
     width: 100%;
+    
   }
 
   &__media-picture {
@@ -231,6 +232,8 @@
     width: 100%;
     max-width: 100%;
     height: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
   }
 
   &__media-video {
@@ -238,6 +241,8 @@
     width: 100%;
     max-width: 100%;
     height: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
   }
 
   &__hero-caption,
@@ -278,9 +283,9 @@
     font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--primary-foreground);
-    font-weight: 500;
-    background: var(--primary-green);
+    color: var(--foreground);
+    font-weight: 700;
+    border-bottom: 2px solid var(--primary-green);
     padding: 0.25rem 0.5rem;
     // border-radius: 0.25rem;
     display: inline-block;
