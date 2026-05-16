@@ -46,9 +46,17 @@ const SocialGlyph: React.FC<{ platform: SocialPlatform | string }> = ({ platform
       )
     case 'linkedin':
       return (
-        <svg {...common}>
-          <path d="M6.94 6.5A2.44 2.44 0 1 1 6.94 1.62a2.44 2.44 0 0 1 0 4.88ZM2.9 22.4h8.08V7.9H2.9v14.5ZM13.33 7.9h7.75v1.98h.11c1.08-1.98 2.94-2.29 4.32-2.29 4.62 0 5.48 3.05 5.48 7.01V22.4h-8.08v-6.7c0-1.6-.03-3.66-2.23-3.66-2.23 0-2.57 1.74-2.57 3.54v6.82h-8.08V7.9h3.3Z" />
-        </svg>
+        <span
+          aria-hidden
+          style={{
+            display: 'inline-block',
+            width: size,
+            height: size,
+            backgroundColor: 'currentColor',
+            WebkitMask: "url('/icons/linkedin-icon.svg') center / contain no-repeat",
+            mask: "url('/icons/linkedin-icon.svg') center / contain no-repeat",
+          }}
+        />
       )
     case 'x':
       return (
