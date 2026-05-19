@@ -42,13 +42,13 @@ export function KeyboardIcon() {
 
   return (
     <motion.svg
-      width="40"
-      height="30"
+      width="100%"
+      height="100%"
       viewBox="0 0 40 30"
       aria-hidden
     >
       {/* keyboard frame */}
-      <rect x="1.5" y="2.5" width="37" height="25" rx="4" stroke="currentColor" strokeWidth="1.5" fill="none" />
+      <rect x="1.5" y="2.5" width="37" height="25" rx="4" stroke="currentColor" strokeWidth="1.6" fill="none" />
 
       {/* top row: 6 keys */}
       {[0, 1, 2, 3, 4, 5].map((keyIndex) => (

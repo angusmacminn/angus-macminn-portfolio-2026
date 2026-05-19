@@ -28,15 +28,15 @@ export function CMSIcon() {
   const reduce = useReducedMotion()
 
   return (
-    <motion.svg width="52" height="36" viewBox="0 0 52 36" fill="none" aria-hidden>
-      <rect x="4" y="4" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="2" />
-      <rect x="4" y="20" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="2" />
+    <motion.svg width="100%" height="100%" viewBox="0 0 52 36" fill="none" aria-hidden>
+      <rect x="4" y="4" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="4" y="20" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="1.6" />
 
-      <path d="M16 10H25C25.5523 10 26 10.4477 26 11V25.5C26 26.0523 25.5523 26.5 25 26.5H16" stroke="currentColor" strokeWidth="2" />
+      <path d="M16 10H25C25.5523 10 26 10.4477 26 11V25.5C26 26.0523 25.5523 26.5 25 26.5H16" stroke="currentColor" strokeWidth="1.6" />
       <motion.path
         d="M26 18H36"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="1.6"
         variants={
           reduce
             ? undefined
@@ -56,7 +56,7 @@ export function CMSIcon() {
         height={12}
         rx={1}
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="1.6"
         variants={reduce ? undefined : rightNodeVariants}
         style={{ transformOrigin: '42px 18px' }}
       />

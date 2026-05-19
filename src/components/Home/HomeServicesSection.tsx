@@ -2,9 +2,9 @@
 
 import type { Page } from '@/payload-types'
 import { motion } from 'motion/react'
-import { BezierIcon } from './BezierIcon'
 import { CMSIcon } from './CMSIcon'
 import { KeyboardIcon } from './KeyboardIcon'
+import { MotionIcon } from './MotionIcon'
 import './home-services-section.scss'
 
 type Props = {
@@ -40,13 +40,11 @@ export function HomeServicesSection({ heading, intro, services }: Props) {
                 : 'home-services__bento home-services__bento--auto'
             }
           >
-            {services.map((service) => {
+            {services.map((service, index) => {
               const badgeNames = getBadgeNames(service.badges)
               const hasFrontEndIcon = Boolean(service.title && /front[\s-]?end/i.test(service.title))
               const hasCMSIcon = Boolean(service.title && /cms/i.test(service.title))
-              const hasCreativeDevIcon = Boolean(
-                service.title && /creative\s*development|creative\s*dev/i.test(service.title),
-              )
+              const hasMotionIcon = index === 2
 
               return (
                 <motion.article
@@ -66,9 +64,9 @@ export function HomeServicesSection({ heading, intro, services }: Props) {
                       <span className="home-services__card-icon" aria-hidden>
                         <CMSIcon />
                       </span>
-                    ) : hasCreativeDevIcon ? (
+                    ) : hasMotionIcon ? (
                       <span className="home-services__card-icon" aria-hidden>
-                        <BezierIcon />
+                        <MotionIcon />
                       </span>
                     ) : null}
                   </div>
