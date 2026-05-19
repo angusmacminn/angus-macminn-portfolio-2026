@@ -16,19 +16,23 @@ type Args = {
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const items = await payload.find({
-    collection: 'playground',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: {
-      slug: true,
-    },
-  })
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const items = await payload.find({
+      collection: 'playground',
+      draft: false,
+      limit: 1000,
+      overrideAccess: false,
+      pagination: false,
+      select: {
+        slug: true,
+      },
+    })
 
-  return items.docs.map(({ slug }) => ({ slug }))
+    return items.docs.map(({ slug }) => ({ slug }))
+  } catch {
+    return []
+  }
 }
 
 export default async function PlaygroundExperimentPage({ params: paramsPromise }: Args) {

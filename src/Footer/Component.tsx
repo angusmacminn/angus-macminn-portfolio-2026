@@ -5,6 +5,7 @@ import type { Footer, Header } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import { FooterContactColumn } from './FooterContactColumn.client'
+import { isComingSoon } from '@/utilities/comingSoon'
 import './component.scss'
 
 type PageLinkColumn = {
@@ -35,11 +36,26 @@ export async function Footer() {
                 <nav className="site-footer__column" key={i} aria-label={heading || `Footer column ${i + 1}`}>
                   {heading ? <div className="site-footer__column-heading">{heading}</div> : null}
                   <ul className="site-footer__column-links">
-                    {links.map(({ link }, j) => (
-                      <li className="site-footer__column-link" key={`${i}-${j}`}>
-                        <CMSLink appearance="link" className="site-footer__link" {...(link as any)} />
-                      </li>
-                    ))}
+                    {links.map(({ link }, j) => {
+                      const l = link as any
+                      if (isComingSoon(l?.url, l?.reference)) {
+                        return (
+                          <li className="site-footer__column-link" key={`${i}-${j}`}>
+                            <span className="site-footer__coming-soon">
+                              <span className="site-footer__coming-soon-label">{l?.label}</span>
+                              <span className="site-footer__coming-soon-tag" aria-hidden="true">
+                                coming soon
+                              </span>
+                            </span>
+                          </li>
+                        )
+                      }
+                      return (
+                        <li className="site-footer__column-link" key={`${i}-${j}`}>
+                          <CMSLink appearance="link" className="site-footer__link" {...l} />
+                        </li>
+                      )
+                    })}
                   </ul>
                 </nav>
               )

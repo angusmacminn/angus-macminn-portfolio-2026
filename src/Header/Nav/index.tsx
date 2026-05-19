@@ -7,6 +7,7 @@ import type { Header as HeaderType } from '@/payload-types'
 import { ContactPopover } from '@/Header/ContactPopover'
 import { CMSLink } from '@/components/Link'
 import { cn } from '@/utilities/ui'
+import { isComingSoon } from '@/utilities/comingSoon'
 import './index.scss'
 
 export const HeaderNav: React.FC<{
@@ -49,13 +50,25 @@ export const HeaderNav: React.FC<{
         }
 
         const sectionHref = getHomeSectionHref(link?.url)
+        const url = sectionHref ?? link?.url
+
+        if (isComingSoon(url, link?.reference)) {
+          return (
+            <span key={i} className="header-nav__coming-soon">
+              <span className="header-nav__coming-soon-label">{label}</span>
+              <span className="header-nav__coming-soon-tag" aria-hidden="true">
+                coming soon
+              </span>
+            </span>
+          )
+        }
 
         return (
           <CMSLink
             key={i}
             {...link}
             type={sectionHref ? 'custom' : link?.type}
-            url={sectionHref ?? link?.url}
+            url={url}
             appearance="link"
             onClick={onLinkClick ? () => onLinkClick() : undefined}
           />

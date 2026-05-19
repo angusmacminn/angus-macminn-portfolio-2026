@@ -41,19 +41,23 @@ type ProjectWithLegacyHero = RequiredDataFromCollectionSlug<'projects'> & {
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const projects = await payload.find({
-    collection: 'projects',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: {
-      slug: true,
-    },
-  })
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const projects = await payload.find({
+      collection: 'projects',
+      draft: false,
+      limit: 1000,
+      overrideAccess: false,
+      pagination: false,
+      select: {
+        slug: true,
+      },
+    })
 
-  return projects.docs.map(({ slug }) => ({ slug }))
+    return projects.docs.map(({ slug }) => ({ slug }))
+  } catch {
+    return []
+  }
 }
 
 export default async function ProjectPage({ params: paramsPromise }: Args) {

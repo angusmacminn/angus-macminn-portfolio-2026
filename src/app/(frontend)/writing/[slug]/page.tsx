@@ -22,19 +22,23 @@ function formatDate(dateString: string) {
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const posts = await payload.find({
-    collection: 'writing',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: {
-      slug: true,
-    },
-  })
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const posts = await payload.find({
+      collection: 'writing',
+      draft: false,
+      limit: 1000,
+      overrideAccess: false,
+      pagination: false,
+      select: {
+        slug: true,
+      },
+    })
 
-  return posts.docs.map(({ slug }) => ({ slug }))
+    return posts.docs.map(({ slug }) => ({ slug }))
+  } catch {
+    return []
+  }
 }
 
 export default async function WritingPostPage({ params: paramsPromise }: Args) {

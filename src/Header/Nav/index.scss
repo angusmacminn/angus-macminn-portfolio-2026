@@ -19,10 +19,51 @@
       font-size: var(--h3-mobile);
       text-underline-offset: 4px;
     }
+
+    .header-nav__coming-soon-label {
+      font-size: var(--h3-mobile);
+    }
   }
 
   &__cms-link {
     text-decoration: none;
+  }
+
+  &__coming-soon {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: default;
+    user-select: none;
+
+    &-label {
+      color: var(--muted-foreground);
+      opacity: 0.6;
+      text-decoration: none;
+      pointer-events: none;
+    }
+
+    &-tag {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%) translateY(-4px);
+      font-size: 0.625rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    &:hover &-tag {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
   }
 }
 
