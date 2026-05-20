@@ -3,6 +3,8 @@ import { slugField } from 'payload'
 import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import { revalidatePlayground, revalidatePlaygroundDelete } from './hooks/revalidatePlayground'
+import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 
 export const Playground: CollectionConfig<'playground'> = {
   slug: 'playground',
@@ -82,8 +84,18 @@ export const Playground: CollectionConfig<'playground'> = {
     },
     slugField(),
   ],
+  hooks: {
+    afterChange: [revalidatePlayground],
+    beforeChange: [populatePublishedAt],
+    afterDelete: [revalidatePlaygroundDelete],
+  },
   versions: {
-    drafts: true,
+    drafts: {
+      autosave: {
+        interval: 100,
+      },
+      schedulePublish: true,
+    },
     maxPerDoc: 50,
   },
 }

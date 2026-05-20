@@ -10,6 +10,8 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
+import { revalidateProject, revalidateProjectDelete } from './hooks/revalidateProject'
+import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 
 export const Projects: CollectionConfig<'projects'> = {
   slug: 'projects',
@@ -294,8 +296,18 @@ export const Projects: CollectionConfig<'projects'> = {
     },
     slugField(),
   ],
+  hooks: {
+    afterChange: [revalidateProject],
+    beforeChange: [populatePublishedAt],
+    afterDelete: [revalidateProjectDelete],
+  },
   versions: {
-    drafts: true,
+    drafts: {
+      autosave: {
+        interval: 100,
+      },
+      schedulePublish: true,
+    },
     maxPerDoc: 50,
   },
 }

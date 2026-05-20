@@ -3,6 +3,8 @@ import { slugField } from 'payload'
 import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import { revalidateWriting, revalidateWritingDelete } from './hooks/revalidateWriting'
+import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 
 export const Writing: CollectionConfig<'writing'> = {
   slug: 'writing',
@@ -51,8 +53,18 @@ export const Writing: CollectionConfig<'writing'> = {
     },
     slugField(),
   ],
+  hooks: {
+    afterChange: [revalidateWriting],
+    beforeChange: [populatePublishedAt],
+    afterDelete: [revalidateWritingDelete],
+  },
   versions: {
-    drafts: true,
+    drafts: {
+      autosave: {
+        interval: 100,
+      },
+      schedulePublish: true,
+    },
     maxPerDoc: 50,
   },
 }
