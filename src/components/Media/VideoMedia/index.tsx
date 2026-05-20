@@ -33,7 +33,8 @@ export const VideoMedia: React.FC<MediaProps> = (props) => {
   }, [])
 
   if (resource && typeof resource === 'object') {
-    const { filename } = resource
+    const { filename, url } = resource
+    const src = url ? getMediaUrl(url) : getMediaUrl(`/media/${filename}`)
 
     return (
       <video
@@ -46,7 +47,7 @@ export const VideoMedia: React.FC<MediaProps> = (props) => {
         playsInline={videoPlaysInline}
         ref={videoRef}
       >
-        <source src={getMediaUrl(`/media/${filename}`)} />
+        <source src={src} />
       </video>
     )
   }

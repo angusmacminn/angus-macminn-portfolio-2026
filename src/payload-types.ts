@@ -1602,10 +1602,23 @@ export interface TaskSchedulePublish {
   input: {
     type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
-    doc?: {
-      relationTo: 'pages';
-      value: string | Page;
-    } | null;
+    doc?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'projects';
+          value: string | Project;
+        } | null)
+      | ({
+          relationTo: 'writing';
+          value: string | Writing;
+        } | null)
+      | ({
+          relationTo: 'playground';
+          value: string | Playground;
+        } | null);
     global?: string | null;
     user?: (string | null) | User;
   };
