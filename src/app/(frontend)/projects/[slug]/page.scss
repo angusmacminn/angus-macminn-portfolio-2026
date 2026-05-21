@@ -362,6 +362,7 @@
         min-height: 0;
         overflow: hidden;
         border-radius: 10px;
+        border: 1px solid var(--border);
       }
 
       .project-page__media-picture {
@@ -373,6 +374,7 @@
         height: 100%;
         object-fit: cover;
         border-radius: 0;
+        border: none;
       }
     }
   }
