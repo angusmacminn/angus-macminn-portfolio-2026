@@ -13,6 +13,14 @@ type PageLinkColumn = {
   links?: Array<{ link: React.ComponentProps<typeof CMSLink> }> | null
 }
 
+const getHomeSectionHref = (rawUrl?: string | null): string | null => {
+  if (!rawUrl) return null
+  const normalized = rawUrl.trim().toLowerCase()
+  if (normalized === '/about' || normalized === 'about' || normalized === '#about') return '/#about'
+  if (normalized === '/work' || normalized === 'work' || normalized === '#work') return '/#work'
+  return null
+}
+
 export async function Footer() {
   const footerData = (await getCachedGlobal('footer', 1)()) as Footer & {
     pageLinks?: PageLinkColumn[] | null
@@ -50,9 +58,16 @@ export async function Footer() {
                           </li>
                         )
                       }
+                      const sectionHref = getHomeSectionHref(l?.url)
                       return (
                         <li className="site-footer__column-link" key={`${i}-${j}`}>
-                          <CMSLink appearance="link" className="site-footer__link" {...l} />
+                          <CMSLink
+                            appearance="link"
+                            className="site-footer__link"
+                            {...l}
+                            type={sectionHref ? 'custom' : l?.type}
+                            url={sectionHref ?? l?.url}
+                          />
                         </li>
                       )
                     })}
