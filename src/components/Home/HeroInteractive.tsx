@@ -10,7 +10,7 @@ type Props = {
   className?: string
 }
 
-const PARTICLE_COUNT = 500
+const PARTICLE_COUNT = 506
 const DAMPING = 0.92
 const SPRING = 0.06
 

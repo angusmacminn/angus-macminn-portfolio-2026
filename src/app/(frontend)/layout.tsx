@@ -30,6 +30,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <InitTheme />
         <Providers>
+          <a href="#main-content" className="skip-to-content">
+            Skip to content
+          </a>
+
           <AdminBar
             adminBarProps={{
               preview: isEnabled,
@@ -37,7 +41,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
 
           <Header />
-          {children}
+          <main id="main-content" tabIndex={-1}>
+            {children}
+          </main>
           <DialRoot />
           <Footer />
         </Providers>

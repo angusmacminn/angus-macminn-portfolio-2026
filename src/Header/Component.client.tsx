@@ -106,6 +106,38 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   }, [mobileNavOpen])
 
   useEffect(() => {
+    if (!mobileNavOpen) return
+    const panel = document.getElementById('primary-mobile-nav')
+    if (!panel) return
+    const getFocusable = () =>
+      Array.from(
+        panel.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((el) => !el.closest('[aria-hidden="true"]'))
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+      const focusable = getFocusable()
+      if (!focusable.length) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [mobileNavOpen])
+
+  useEffect(() => {
     if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [headerTheme])
@@ -146,7 +178,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
         <div className="site-header__inner">
           <div className="site-header__start">
             <div className="site-header__start-collapsible">
-              <Link href="/">
+              <Link href="/" aria-label="Angus MacMinn — go to homepage">
                 <Logo loading="eager" priority="high" className="site-header__logo" />
               </Link>
               <div className="site-header__theme site-header__theme--mobile">
@@ -202,6 +234,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
             id="primary-mobile-nav"
             role="dialog"
             aria-modal="true"
+            aria-label="Navigation menu"
             initial={panelInitial}
             animate={panelAnimate}
             exit={panelExit}

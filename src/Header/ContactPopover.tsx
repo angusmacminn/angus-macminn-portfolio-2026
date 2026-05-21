@@ -159,6 +159,9 @@ export const ContactPopover: React.FC<{
 
   const close = useCallback(() => {
     setOpen(false)
+    requestAnimationFrame(() => {
+      triggerRef.current?.focus()
+    })
   }, [])
 
   useEffect(() => {
@@ -167,8 +170,37 @@ export const ContactPopover: React.FC<{
       const el = rootRef.current
       if (el && !el.contains(e.target as Node)) close()
     }
+    const getFocusable = () => {
+      const panel = document.getElementById(id)
+      if (!panel) return []
+      return Array.from(
+        panel.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex="-1"])',
+        ),
+      )
+    }
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close()
+      if (e.key === 'Escape') {
+        close()
+        return
+      }
+      if (e.key === 'Tab') {
+        const focusable = getFocusable()
+        if (!focusable.length) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault()
+            last.focus()
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault()
+            first.focus()
+          }
+        }
+      }
     }
     document.addEventListener('mousedown', onDoc)
     document.addEventListener('keydown', onKey)
@@ -176,7 +208,19 @@ export const ContactPopover: React.FC<{
       document.removeEventListener('mousedown', onDoc)
       document.removeEventListener('keydown', onKey)
     }
-  }, [open, close])
+  }, [open, close, id])
+
+  useEffect(() => {
+    if (!open) return
+    const raf = requestAnimationFrame(() => {
+      const panel = document.getElementById(id)
+      const first = panel?.querySelector<HTMLElement>(
+        'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])',
+      )
+      first?.focus()
+    })
+    return () => cancelAnimationFrame(raf)
+  }, [open, id])
 
   const heading = panel?.heading?.trim()
   const subheading = panel?.subheading?.trim()
