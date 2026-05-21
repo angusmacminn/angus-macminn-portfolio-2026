@@ -18,6 +18,7 @@ const getHomeSectionHref = (rawUrl?: string | null): string | null => {
   const normalized = rawUrl.trim().toLowerCase()
   if (normalized === '/about' || normalized === 'about' || normalized === '#about') return '/#about'
   if (normalized === '/work' || normalized === 'work' || normalized === '#work') return '/#work'
+  if (normalized === '/services' || normalized === 'services' || normalized === '#services') return '/#services'
   return null
 }
 
