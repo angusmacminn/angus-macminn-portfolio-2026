@@ -350,6 +350,30 @@
 
     &__section-media--two-up {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
+
+      .project-page__section-media-item {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .project-page__section-media-wrapper {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        border-radius: 10px;
+      }
+
+      .project-page__media-picture {
+        height: 100%;
+      }
+
+      .project-page__media-image,
+      .project-page__media-video {
+        height: 100%;
+        object-fit: cover;
+        border-radius: 0;
+      }
     }
   }
 }
