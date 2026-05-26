@@ -18,6 +18,8 @@ import { DialRoot } from 'dialkit'
 import 'dialkit/styles.css'
 import './globals.scss'
 
+import { Analytics } from "@vercel/analytics/next"
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
 
@@ -47,6 +49,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <DialRoot />
           <Footer />
         </Providers>
+        <Analytics />
       </body>
     </html>
   )
