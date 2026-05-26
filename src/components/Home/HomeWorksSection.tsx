@@ -124,9 +124,7 @@ export function HomeWorksSection({ heading, intro, projects }: Props) {
 
                   <div className="home-works__card-content">
                     {description && <p className="home-works__card-subtitle">{description}</p>}
-                    {project.cardResponsibilities && (
-                      <p className="home-works__card-responsibilities">{project.cardResponsibilities}</p>
-                    )}
+                    
                   </div>
                 </>
               )
