@@ -180,7 +180,7 @@ export function FooterContactColumn({
       {socialLinks && socialLinks.length > 0 ? (
         <div className="site-footer__contact-social">
           <div className="site-footer__label">Socials</div>
-          <div className="site-footer__social-links" aria-label="Contact social links">
+          <nav className="site-footer__social-links" aria-label="Contact social links">
             {socialLinks.map((item, i) => {
               const platform = item?.platform || 'website'
               const linkProps = item?.link || {}
@@ -195,7 +195,7 @@ export function FooterContactColumn({
                 </CMSLink>
               )
             })}
-          </div>
+          </nav>
         </div>
       ) : null}
 
