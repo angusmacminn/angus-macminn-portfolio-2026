@@ -32,6 +32,10 @@ const FLOW_TIME = 0.15
 const FLOW_BORDER_STRENGTH = 0.03
 /** Trail fade alpha at peak designer weight. Lower = longer trails. */
 const FLOW_TRAIL_ALPHA = 0.28
+/** Idle mode: gentle pull toward cursor position, even outside canvas bounds. */
+const CURSOR_ATTRACT_STRENGTH = 0.56
+/** Distance scale for cursor attraction falloff. */
+const CURSOR_ATTRACT_RADIUS = 0.7
 
 function clamp01(n: number) {
   return Math.max(0, Math.min(1, n))
@@ -98,6 +102,9 @@ export function HeroInteractive({ mode, reducedMotion, className }: Props) {
     let dpr = 1
     let cssW = 0
     let cssH = 0
+    let cursorX = 0
+    let cursorY = 0
+    let cursorActive = false
 
     function readThemeColors(canvasNode: HTMLCanvasElement) {
       const root = canvasNode.closest('.home-hero') || document.documentElement
@@ -166,6 +173,15 @@ export function HeroInteractive({ mode, reducedMotion, className }: Props) {
     )
     io.observe(canvasEl)
 
+    function handlePointerMove(e: PointerEvent) {
+      const rect = canvasEl!.getBoundingClientRect()
+      cursorX = e.clientX - rect.left
+      cursorY = e.clientY - rect.top
+      cursorActive = true
+    }
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true })
+
     let last = performance.now()
     let themeTick = 0
 
@@ -219,6 +235,7 @@ export function HeroInteractive({ mode, reducedMotion, className }: Props) {
       const ft = time * FLOW_TIME
       const fs = FLOW_SCALE
       const borderMargin = Math.min(cssW, cssH) * 0.12
+      const attractRadius = Math.max(1, Math.min(cssW, cssH) * CURSOR_ATTRACT_RADIUS)
 
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const ax = anchorX[i]!
@@ -239,6 +256,17 @@ export function HeroInteractive({ mode, reducedMotion, className }: Props) {
           const dy = iy - y[i]!
           fx += wi * dx * 0.012 * (rm < 1 ? 1.8 : 1)
           fy += wi * dy * 0.012 * (rm < 1 ? 1.8 : 1)
+
+          if (cursorActive) {
+            const cdx = cursorX - x[i]!
+            const cdy = cursorY - y[i]!
+            const dist = Math.hypot(cdx, cdy)
+            const falloff = 1 / (1 + dist / attractRadius)
+            const invDist = 1 / Math.max(1, dist)
+            const pull = wi * CURSOR_ATTRACT_STRENGTH * falloff * rm
+            fx += cdx * invDist * pull
+            fy += cdy * invDist * pull
+          }
         }
 
         // Developer: crisp spring into grid cell. No jitter, no shimmer.
@@ -358,6 +386,7 @@ export function HeroInteractive({ mode, reducedMotion, className }: Props) {
       cancelAnimationFrame(raf)
       ro.disconnect()
       io.disconnect()
+      window.removeEventListener('pointermove', handlePointerMove)
     }
   }, [])
 
