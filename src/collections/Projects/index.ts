@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Field } from 'payload'
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { slugField } from 'payload'
@@ -13,8 +13,64 @@ import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { revalidateProject, revalidateProjectDelete } from './hooks/revalidateProject'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 
-export const Projects: CollectionConfig<'projects'> = {
-  slug: 'projects',
+const projectSectionBodyEditor = lexicalEditor({
+  features: ({ rootFeatures }) => {
+    return [
+      ...rootFeatures,
+      HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
+      BlocksFeature({ blocks: [MediaBlock] }),
+      FixedToolbarFeature(),
+      InlineToolbarFeature(),
+    ]
+  },
+})
+
+const projectSectionMediaFields: Field[] = [
+  {
+    name: 'media',
+    type: 'upload',
+    relationTo: 'media',
+    required: true,
+  },
+  {
+    name: 'caption',
+    type: 'text',
+  },
+  {
+    name: 'autoplay',
+    type: 'checkbox',
+    defaultValue: true,
+    admin: {
+      description: 'Automatically play video when possible.',
+    },
+  },
+  {
+    name: 'loop',
+    type: 'checkbox',
+    defaultValue: true,
+  },
+  {
+    name: 'muted',
+    type: 'checkbox',
+    defaultValue: true,
+    admin: {
+      description: 'Most browsers require muted videos for autoplay.',
+    },
+  },
+  {
+    name: 'controls',
+    type: 'checkbox',
+    defaultValue: false,
+  },
+  {
+    name: 'playsInline',
+    type: 'checkbox',
+    defaultValue: true,
+    label: 'Plays inline',
+  },
+]
+
+export const Projects: CollectionConfig<'projects'> = {  slug: 'projects',
   access: {
     create: authenticated,
     delete: authenticated,
@@ -193,17 +249,7 @@ export const Projects: CollectionConfig<'projects'> = {
                 {
                   name: 'body',
                   type: 'richText',
-                  editor: lexicalEditor({
-                    features: ({ rootFeatures }) => {
-                      return [
-                        ...rootFeatures,
-                        HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
-                        BlocksFeature({ blocks: [MediaBlock] }),
-                        FixedToolbarFeature(),
-                        InlineToolbarFeature(),
-                      ]
-                    },
-                  }),
+                  editor: projectSectionBodyEditor,
                 },
                 {
                   name: 'layout',
@@ -227,52 +273,45 @@ export const Projects: CollectionConfig<'projects'> = {
                 {
                   name: 'mediaItems',
                   type: 'array',
-                  label: 'Section media',
+                  label: 'Media 1',
                   maxRows: 2,
-                  fields: [
-                    {
-                      name: 'media',
-                      type: 'upload',
-                      relationTo: 'media',
-                      required: true,
-                    },
-                    {
-                      name: 'caption',
-                      type: 'text',
-                    },
-                    {
-                      name: 'autoplay',
-                      type: 'checkbox',
-                      defaultValue: true,
-                      admin: {
-                        description: 'Automatically play video when possible.',
-                      },
-                    },
-                    {
-                      name: 'loop',
-                      type: 'checkbox',
-                      defaultValue: true,
-                    },
-                    {
-                      name: 'muted',
-                      type: 'checkbox',
-                      defaultValue: true,
-                      admin: {
-                        description: 'Most browsers require muted videos for autoplay.',
-                      },
-                    },
-                    {
-                      name: 'controls',
-                      type: 'checkbox',
-                      defaultValue: false,
-                    },
-                    {
-                      name: 'playsInline',
-                      type: 'checkbox',
-                      defaultValue: true,
-                      label: 'Plays inline',
-                    },
-                  ],
+                  fields: projectSectionMediaFields,
+                },
+                {
+                  name: 'heading2',
+                  type: 'text',
+                  label: 'Heading 2',
+                },
+                {
+                  name: 'body2',
+                  type: 'richText',
+                  label: 'Body 2',
+                  editor: projectSectionBodyEditor,
+                },
+                {
+                  name: 'mediaItems2',
+                  type: 'array',
+                  label: 'Media 2',
+                  maxRows: 2,
+                  fields: projectSectionMediaFields,
+                },
+                {
+                  name: 'heading3',
+                  type: 'text',
+                  label: 'Heading 3',
+                },
+                {
+                  name: 'body3',
+                  type: 'richText',
+                  label: 'Body 3',
+                  editor: projectSectionBodyEditor,
+                },
+                {
+                  name: 'mediaItems3',
+                  type: 'array',
+                  label: 'Media 3',
+                  maxRows: 2,
+                  fields: projectSectionMediaFields,
                 },
               ],
             },

@@ -40,6 +40,66 @@ type ProjectWithLegacyHero = RequiredDataFromCollectionSlug<'projects'> & {
   heroImage?: MediaType | string | number | null
 }
 
+type SectionLayout = 'single' | 'two-up' | 'full-bleed' | null | undefined
+
+function SectionMediaGrid({
+  items,
+  layout,
+}: {
+  items: SectionMediaItem[]
+  layout: SectionLayout
+}) {
+  if (items.length === 0) {
+    return null
+  }
+
+  return (
+    <div
+      className={
+        layout === 'two-up'
+          ? 'project-page__section-media project-page__section-media--two-up'
+          : 'project-page__section-media'
+      }
+    >
+      {items.map((item) => {
+        const mediaResource = typeof item.media === 'object' && item.media ? item.media : null
+        const mediaWidth = typeof mediaResource?.width === 'number' ? mediaResource.width : null
+        const mediaHeight = typeof mediaResource?.height === 'number' ? mediaResource.height : null
+        const hasAspectRatio =
+          mediaWidth !== null && mediaHeight !== null && mediaWidth > 0 && mediaHeight > 0
+        const isPortraitMedia = hasAspectRatio && mediaHeight > mediaWidth
+
+        return (
+          <div
+            className={
+              isPortraitMedia
+                ? 'project-page__section-media-item project-page__section-media-item--portrait'
+                : 'project-page__section-media-item'
+            }
+            key={item.id || String(item.media)}
+          >
+            {mediaResource && (
+              <Media
+                className="project-page__section-media-wrapper"
+                pictureClassName="project-page__media-picture"
+                imgClassName="project-page__media-image"
+                videoClassName="project-page__media-video"
+                resource={mediaResource}
+                videoAutoPlay={item.autoplay ?? true}
+                videoLoop={item.loop ?? true}
+                videoMuted={item.muted ?? true}
+                videoControls={item.controls ?? false}
+                videoPlaysInline={item.playsInline ?? true}
+              />
+            )}
+            {item.caption && <p className="project-page__image-caption">{item.caption}</p>}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 export async function generateStaticParams() {
   try {
     const payload = await getPayload({ config: configPromise })
@@ -179,6 +239,8 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
                     playsInline: true,
                   })) ??
                   []
+                const mediaItems2 = (section.mediaItems2 as SectionMediaItem[] | null | undefined) ?? []
+                const mediaItems3 = (section.mediaItems3 as SectionMediaItem[] | null | undefined) ?? []
 
                 return (
                   <article className="project-page__section" key={section.id || section.heading} id={id}>
@@ -189,56 +251,29 @@ export default async function ProjectPage({ params: paramsPromise }: Args) {
                     )}
                     {section.body && <RichText className="project-page__section-body" data={section.body} />}
 
-                    {mediaItems.length > 0 && (
-                      <div
-                        className={
-                          section.layout === 'two-up'
-                            ? 'project-page__section-media project-page__section-media--two-up'
-                            : 'project-page__section-media'
-                        }
-                      >
-                        {mediaItems.map((item) => {
-                          const mediaResource = typeof item.media === 'object' && item.media ? item.media : null
-                          const mediaWidth =
-                            typeof mediaResource?.width === 'number' ? mediaResource.width : null
-                          const mediaHeight =
-                            typeof mediaResource?.height === 'number' ? mediaResource.height : null
-                          const hasAspectRatio =
-                            mediaWidth !== null &&
-                            mediaHeight !== null &&
-                            mediaWidth > 0 &&
-                            mediaHeight > 0
-                          const isPortraitMedia = hasAspectRatio && mediaHeight > mediaWidth
+                    <SectionMediaGrid items={mediaItems} layout={section.layout} />
 
-                          return (
-                            <div
-                              className={
-                                isPortraitMedia
-                                  ? 'project-page__section-media-item project-page__section-media-item--portrait'
-                                  : 'project-page__section-media-item'
-                              }
-                              key={item.id || String(item.media)}
-                            >
-                              {mediaResource && (
-                                <Media
-                                  className="project-page__section-media-wrapper"
-                                  pictureClassName="project-page__media-picture"
-                                  imgClassName="project-page__media-image"
-                                  videoClassName="project-page__media-video"
-                                  resource={mediaResource}
-                                  videoAutoPlay={item.autoplay ?? true}
-                                  videoLoop={item.loop ?? true}
-                                  videoMuted={item.muted ?? true}
-                                  videoControls={item.controls ?? false}
-                                  videoPlaysInline={item.playsInline ?? true}
-                                />
-                              )}
-                              {item.caption && <p className="project-page__image-caption">{item.caption}</p>}
-                            </div>
-                          )
-                        })}
-                      </div>
+                    {section.heading2 && (
+                      <h2 className="project-page__section-heading project-page__section-heading--follow-up">
+                        {section.heading2}
+                      </h2>
                     )}
+                    {section.body2 && (
+                      <RichText className="project-page__section-body" data={section.body2} />
+                    )}
+
+                    <SectionMediaGrid items={mediaItems2} layout={section.layout} />
+
+                    {section.heading3 && (
+                      <h2 className="project-page__section-heading project-page__section-heading--follow-up">
+                        {section.heading3}
+                      </h2>
+                    )}
+                    {section.body3 && (
+                      <RichText className="project-page__section-body" data={section.body3} />
+                    )}
+
+                    <SectionMediaGrid items={mediaItems3} layout={section.layout} />
                   </article>
                 )
               })}

@@ -332,6 +332,74 @@ export interface Project {
               id?: string | null;
             }[]
           | null;
+        heading2?: string | null;
+        body2?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        mediaItems2?:
+          | {
+              media: string | Media;
+              caption?: string | null;
+              /**
+               * Automatically play video when possible.
+               */
+              autoplay?: boolean | null;
+              loop?: boolean | null;
+              /**
+               * Most browsers require muted videos for autoplay.
+               */
+              muted?: boolean | null;
+              controls?: boolean | null;
+              playsInline?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        heading3?: string | null;
+        body3?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        mediaItems3?:
+          | {
+              media: string | Media;
+              caption?: string | null;
+              /**
+               * Automatically play video when possible.
+               */
+              autoplay?: boolean | null;
+              loop?: boolean | null;
+              /**
+               * Most browsers require muted videos for autoplay.
+               */
+              muted?: boolean | null;
+              controls?: boolean | null;
+              playsInline?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -1081,6 +1149,34 @@ export interface ProjectsSelect<T extends boolean = true> {
         body?: T;
         layout?: T;
         mediaItems?:
+          | T
+          | {
+              media?: T;
+              caption?: T;
+              autoplay?: T;
+              loop?: T;
+              muted?: T;
+              controls?: T;
+              playsInline?: T;
+              id?: T;
+            };
+        heading2?: T;
+        body2?: T;
+        mediaItems2?:
+          | T
+          | {
+              media?: T;
+              caption?: T;
+              autoplay?: T;
+              loop?: T;
+              muted?: T;
+              controls?: T;
+              playsInline?: T;
+              id?: T;
+            };
+        heading3?: T;
+        body3?: T;
+        mediaItems3?:
           | T
           | {
               media?: T;
